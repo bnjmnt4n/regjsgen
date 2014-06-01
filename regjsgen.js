@@ -1,5 +1,5 @@
 /*!
- * regjsgen
+ * RegJSGen
  * Copyright 2014 Benjamin Tan <https://d10.github.io/>
  * Available under MIT license <http://mths.be/mit>
  */
@@ -33,8 +33,7 @@
   /*--------------------------------------------------------------------------*/
 
   function generate(ast) {
-    var fn = getGenerator(ast.type);
-    return fn(ast);
+    return getGenerator(ast.type)(ast);
   }
 
   function getGenerator(type) {
@@ -93,6 +92,16 @@
     } else {
       throw Error('Invalid assertion');
     }
+  }
+
+  function generateCharacter(ast) {
+    var type = ast.type;
+
+    if (type != 'character') {
+      throw Error('Invalid node type: ' + type);
+    }
+
+    return ast.char;
   }
 
   function generateDisjunction(ast) {
@@ -173,6 +182,53 @@
     }
   }
 
+  function generateEscapedChar(ast) {
+    var type = ast.type;
+
+    if (type != 'escapedChar') {
+      throw Error('Invalid node type: ' + type);
+    }
+
+    return '\\' + ast.value;
+  }
+
+  function generateGroup(ast) {
+    var type = ast.type;
+
+    if (type != 'group') {
+      throw Error('Invalid node type: ' + type);
+    }
+
+    var result = '(';
+
+    switch (ast.behaviour) {
+      case 'normal':
+        break;
+      case 'ignore':
+        result += '?:';
+      case 'lookahead':
+        result += '?=';
+      case 'negativeLookahead':
+        result += '?!';
+      default:
+        throw Error('Invalid behaviour: ' + ast.behaviour);
+    }
+
+    result += generateDisjunction(alternatives[i]) + ')';
+
+    return result;
+  }
+
+  function generateRef(ast) {
+    var type = ast.type;
+
+    if (type != 'ref') {
+      throw Error('Invalid node type: ' + type);
+    }
+
+    return '\\' + ast.ref;
+  }
+
   function generateTerm(ast) {
     var type = ast.type;
 
@@ -190,10 +246,14 @@
 
   generate.alternative = generateAlternative;
   generate.assertion = generateAssertion;
+  generate.character = generateCharacter;
   generate.disjunction = generateDisjunction;
   generate.dot = generateDot;
   generate.empty = generateEmpty;
   generate.escape = generateEscape;
+  generate.escapedChar = generateEscapedChar;
+  generate.group = generateGroup;
+  generate.ref = generateRef;
 
   /*--------------------------------------------------------------------------*/
 
