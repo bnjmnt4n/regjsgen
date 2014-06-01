@@ -1,0 +1,18 @@
+{
+  "name": "regjsgen",
+  "version": "0.0.1",
+  "author": "Benjamin Tan <demoneaux@gmail.com>",
+  "license": "MIT",
+  "main": "./regjsgen",
+  "homepage": "https://github.com/d10/regjsgen",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:d10/regjsgen.git"
+  },
+  "dependencies": {
+    "jsesc": "~0.4.3"
+  },
+  "scripts": {
+    "test": "node test/index.js"
+  }
+}
