@@ -3,17 +3,17 @@ var jsesc = require('jsesc');
 
 var generate = require('../regjsgen').generate;
 
-var parseTests = [].concat(
-  JSON.parse(fs.readFileSync('test/parse_input.json') || '[]'),
-  JSON.parse(fs.readFileSync('test/parse_unicode_input.json', 'utf8') || '[]')
+var generateTests = [].concat(
+  JSON.parse(fs.readFileSync('test/generate_input.json') || '[]'),
+  JSON.parse(fs.readFileSync('test/generate_unicode_input.json', 'utf8') || '[]')
 );
-var parseResult = [].concat(
-  JSON.parse(fs.readFileSync('test/parse_output.json') || '[]'),
-  JSON.parse(fs.readFileSync('test/parse_unicode_output.json', 'utf8') || '[]')
+var generateResult = [].concat(
+  JSON.parse(fs.readFileSync('test/generate_output.json') || '[]'),
+  JSON.parse(fs.readFileSync('test/generate_unicode_output.json', 'utf8') || '[]')
 );
 
-if (parseTests.length !== parseResult.length) {
-  fail('Parse input and output file needs to have same number of arguments');
+if (generateTests.length !== generateResult.length) {
+  fail('Generate input and output file needs to have same number of arguments');
 }
 
 var stringify = function(obj) {
@@ -22,7 +22,7 @@ var stringify = function(obj) {
   });
 };
 
-parseTests.forEach(function(ast, idx) {
+generateTests.forEach(function(ast, idx) {
   var generated;
   try {
     generated = generate(ast);
@@ -30,17 +30,17 @@ parseTests.forEach(function(ast, idx) {
     generated = {
       type: 'error',
       name: error.name,
-      message: error.message,
-      input: ast
+      message: error.message
     };
   }
 
-  var result = parseResult[idx],
-      astString = stringify(ast);
+  var result = generateResult[idx],
+      astString = stringify(ast),
+      generatedStringified = stringify(generated);
 
-  if (stringify(generated) !== stringify(result)) {
-    throw new Error('Failure generating ' + JSON.stringify(result) +
-      '\nfrom AST:\n' + astString);
+  if (generatedStringified !== stringify(result)) {
+    throw new Error('Failure generating ' + stringify(result) +
+      '\nfrom AST:\n' + astString + '\n\n' + generatedStringified);
   } else {
     console.log('PASSED TEST: ' + astString);
   }
