@@ -27,6 +27,7 @@ generateTests.forEach(function(ast, idx) {
   try {
     generated = generate(ast);
   } catch (error) {
+    var err = error;
     generated = {
       type: 'error',
       name: error.name,
@@ -39,6 +40,9 @@ generateTests.forEach(function(ast, idx) {
       generatedStringified = stringify(generated);
 
   if (generatedStringified !== stringify(result)) {
+    if (err) {
+      console.error(err.stack);
+    }
     throw new Error('Failure generating ' + stringify(result) +
       '\nfrom AST:\n' + astString + '\n\n' + generatedStringified);
   } else {

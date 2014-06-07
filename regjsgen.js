@@ -41,6 +41,8 @@
       return generate[type];
     }
 
+    console.log(type);
+
     throw Error('Invalid node type: ' + type);
   }
 
@@ -49,7 +51,7 @@
   function generateAlternative(ast) {
     var type = ast.type;
 
-    if (type != 'alternative' || type != 'empty') {
+    if (!/^(?:alternative|empty)/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
@@ -63,13 +65,13 @@
     if (length == 0) {
       throw Error('No terms');
     } else if (length == 1) {
-      return generateTerm(alternatives[0]);
+      return generateTerm(terms[0]);
     } else {
       var i = -1,
           result = '';
 
       while (++i < length) {
-        result += generateTerm(alternatives[i]);
+        result += generateTerm(terms[i]);
       }
 
       return result;
@@ -94,6 +96,16 @@
     }
   }
 
+  function generateAtom(ast) {
+    var type = ast.type;
+
+    if (!/^(?:assertion|character|characterClass|dot|group|ref|escapedChar)$/.test(type)) {
+      throw Error('Invalid node type: ' + type);
+    }
+
+    return getGenerator(type)(ast);
+  }
+
   function generateCharacter(ast) {
     var type = ast.type;
 
@@ -107,7 +119,7 @@
   function generateDisjunction(ast) {
     var type = ast.type;
 
-    if (type != 'disjuction') {
+    if (type != 'disjunction') {
       throw Error('Invalid node type: ' + type);
     }
 
@@ -219,6 +231,50 @@
     return result;
   }
 
+  function generateQuantifier(ast) {
+    var type = ast.type;
+
+    if (type != 'quantifier') {
+      throw Error('Invalid node type: ' + type);
+    }
+
+    var quantifier = '',
+        min = ast.min,
+        max = ast.max;
+
+    switch (max) {
+      case null:
+        switch (min) {
+          case 0:
+            quantifier = '*'
+            break;
+          case 1:
+            quantifier = '+';
+            break;
+          default:
+            quantifier = '{' + min + ',}';
+            break;
+        }
+        break;
+      default:
+        if (min == max) {
+          quantifier = '{' + min + '}';
+        }
+        else if (min == 0 && max == 1) {
+          quantifier = '?';
+        } else {
+          quantifier = '{' + min + ',' + max + '}';
+        }
+        break;
+    }
+
+    if (!ast.greedy) {
+      quantifier += '?';
+    }
+
+    return generateAtom(ast.child) + quantifier;
+  }
+
   function generateRef(ast) {
     var type = ast.type;
 
@@ -232,14 +288,11 @@
   function generateTerm(ast) {
     var type = ast.type;
 
-    if (type != 'assertion' || type != 'character' || type != 'dot' ||
-        type != 'characterClass' || type != 'group' || type != 'ref' ||
-        type != 'escapedChar') {
+    if (!/^(?:assertion|character|characterClass|dot|group|quantifier|ref|escapedChar)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
-    var fn = getGenerator(type);
-    return fn(ast);
+    return getGenerator(type)(ast);
   }
 
   /*--------------------------------------------------------------------------*/
@@ -253,6 +306,7 @@
   generate.escape = generateEscape;
   generate.escapedChar = generateEscapedChar;
   generate.group = generateGroup;
+  generate.quantifier = generateQuantifier;
   generate.ref = generateRef;
 
   /*--------------------------------------------------------------------------*/
@@ -263,7 +317,7 @@
     // define as an anonymous module so, through path mapping, it can be aliased
     define(function() {
       return {
-        "generate": generate
+        'generate': generate
       };
     });
   }
@@ -275,7 +329,7 @@
   // in a browser or Rhino
   else {
     root.regjsgen = {
-      "generate": generate
+      'generate': generate
     };
   }
 }.call(this));
