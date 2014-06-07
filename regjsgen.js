@@ -32,6 +32,53 @@
 
   /*--------------------------------------------------------------------------*/
 
+  /*! Based on http://mths.be/fromcodepoint v0.2.0 by @mathias */
+
+  var stringFromCharCode = String.fromCharCode;
+  var floor = Math.floor;
+  function fromCodePoint() {
+    var MAX_SIZE = 0x4000;
+    var codeUnits = [];
+    var highSurrogate;
+    var lowSurrogate;
+    var index = -1;
+    var length = arguments.length;
+    if (!length) {
+      return '';
+    }
+    var result = '';
+    while (++index < length) {
+      var codePoint = Number(arguments[index]);
+      if (
+        !isFinite(codePoint) || // `NaN`, `+Infinity`, or `-Infinity`
+        codePoint < 0 || // not a valid Unicode code point
+        codePoint > 0x10FFFF || // not a valid Unicode code point
+        floor(codePoint) != codePoint // not an integer
+      ) {
+        throw RangeError('Invalid code point: ' + codePoint);
+      }
+      if (codePoint <= 0xFFFF) {
+        // BMP code point
+        codeUnits.push(codePoint);
+      } else {
+        // Astral code point; split in surrogate halves
+        // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+        codePoint -= 0x10000;
+        highSurrogate = (codePoint >> 10) + 0xD800;
+        lowSurrogate = (codePoint % 0x400) + 0xDC00;
+        codeUnits.push(highSurrogate, lowSurrogate);
+      }
+      if (index + 1 == length || codeUnits.length > MAX_SIZE) {
+        result += stringFromCharCode.apply(null, codeUnits);
+        codeUnits.length = 0;
+      }
+    }
+    return result;
+  }
+
+
+  /*--------------------------------------------------------------------------*/
+
   function generate(ast) {
     return getGenerator(ast.type)(ast);
   }
@@ -40,8 +87,6 @@
     if (generate.hasOwnProperty(type)) {
       return generate[type];
     }
-
-    console.log(type);
 
     throw Error('Invalid node type: ' + type);
   }
@@ -85,21 +130,24 @@
       throw Error('Invalid node type: ' + type);
     }
 
-    var sub = ast.sub;
-
-    if (sub == 'start') {
-      return '^';
-    } else if (sub == 'end') {
-      return '$';
-    } else {
-      throw Error('Invalid assertion');
+    switch (ast.name) {
+      case 'start':
+        return '^';
+      case 'end':
+        return '$';
+      case 'boundary':
+        return '\\b';
+      case 'not-boundary':
+        return '\\B';
+      default:
+        throw Error('Invalid assertion');
     }
   }
 
   function generateAtom(ast) {
     var type = ast.type;
 
-    if (!/^(?:assertion|character|characterClass|dot|group|ref|escapedChar)$/.test(type)) {
+    if (!/^(?:assertion|character|characterClass|dot|escapeChar|group|ref)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
@@ -113,14 +161,75 @@
       throw Error('Invalid node type: ' + type);
     }
 
-    return ast.char;
+    return fromCodePoint(ast.codePoint);
+  }
+
+  function generateCharacterClass(ast) {
+    var type = ast.type;
+
+    if (type != 'characterClass') {
+      throw Error('Invalid node type: ' + type);
+    }
+
+    var classRanges = ast.classRanges,
+        length = classRanges ? classRanges.length : 0;
+
+    if (length == 0) {
+      throw Error('No class ranges');
+    }
+
+    var i = -1,
+        result = '[';
+
+    if (ast.negative) {
+      result += '^';
+    }
+
+    while (++i < length) {
+      result += generateClassAtom(classRanges[i]);
+    }
+
+    result += ']';
+
+    return result;
+  }
+
+  function generateCharacterClassRange(ast) {
+    var type = ast.type;
+
+    if (type != 'characterClassRange') {
+      throw Error('Invalid node type: ' + type);
+    }
+
+    var min = ast.min,
+        max = ast.max;
+
+    if (min.type == 'characterClassRange' || max.type == 'characterClassRange') {
+      throw Error('Invalid character class range');
+    }
+
+    return generateClassAtom(min) + '-' + generateClassAtom(max);
+  }
+
+  function generateClassAtom(ast) {
+    var type = ast.type;
+
+    if (!/^(?:assertion|character|characterClassRange|dot|escape|escapeChar)$/.test(type)) {
+      throw Error('Invalid node type: ' + type);
+    }
+
+    return getGenerator(type)(ast);
   }
 
   function generateDisjunction(ast) {
     var type = ast.type;
 
-    if (type != 'disjunction') {
+    if (!/^(?:disjunction|alternative)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
+    }
+
+    if (type == 'alternative') {
+      return generateAlternative(ast);
     }
 
     var alternatives = ast.alternatives,
@@ -173,20 +282,20 @@
     }
 
     var name = ast.name,
-        value = ast.value;
+        codePoint = ast.codePoint;
 
     switch (name) {
       case 'unicode':
-        return '\\u' + ('0000' + value).slice(-4);
+        return '\\u' + ('0000' + codePoint.toString(16)).slice(-4);
       case 'codePoint':
-        return '\\u{' + value + '}';
+        return '\\u{' + codePoint.toString(16) + '}';
       case 'controlLetter':
-        return '\\c' + value;
+        return '\\c' + fromCodePoint(codePoint);
       case 'identifier':
       case 'octal':
-        return '\\' + value;
+        return '\\' + fromCodePoint(codePoint);
       case 'hex':
-        return '\\x' + ('00' + value).slice(-2);
+        return '\\x' + ('00' + codePoint.toString(16)).slice(-2);
       case 'null':
         return '\\0';
       default:
@@ -194,10 +303,10 @@
     }
   }
 
-  function generateEscapedChar(ast) {
+  function generateEscapeChar(ast) {
     var type = ast.type;
 
-    if (type != 'escapedChar') {
+    if (type != 'escapeChar') {
       throw Error('Invalid node type: ' + type);
     }
 
@@ -213,20 +322,23 @@
 
     var result = '(';
 
-    switch (ast.behaviour) {
+    switch (ast.behavior) {
       case 'normal':
         break;
       case 'ignore':
         result += '?:';
+        break;
       case 'lookahead':
         result += '?=';
+        break;
       case 'negativeLookahead':
         result += '?!';
+        break;
       default:
         throw Error('Invalid behaviour: ' + ast.behaviour);
     }
 
-    result += generateDisjunction(alternatives[i]) + ')';
+    result += generateDisjunction(ast.disjunction) + ')';
 
     return result;
   }
@@ -288,7 +400,7 @@
   function generateTerm(ast) {
     var type = ast.type;
 
-    if (!/^(?:assertion|character|characterClass|dot|group|quantifier|ref|escapedChar)$/.test(type)) {
+    if (!/^(?:assertion|character|characterClass|dot|empty|escapeChar|group|quantifier|ref)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
@@ -300,11 +412,13 @@
   generate.alternative = generateAlternative;
   generate.assertion = generateAssertion;
   generate.character = generateCharacter;
+  generate.characterClass = generateCharacterClass;
+  generate.characterClassRange = generateCharacterClassRange;
   generate.disjunction = generateDisjunction;
   generate.dot = generateDot;
   generate.empty = generateEmpty;
   generate.escape = generateEscape;
-  generate.escapedChar = generateEscapedChar;
+  generate.escapeChar = generateEscapeChar;
   generate.group = generateGroup;
   generate.quantifier = generateQuantifier;
   generate.ref = generateRef;
