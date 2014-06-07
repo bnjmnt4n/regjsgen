@@ -147,7 +147,7 @@
   function generateAtom(ast) {
     var type = ast.type;
 
-    if (!/^(?:assertion|character|characterClass|dot|escapeChar|group|ref)$/.test(type)) {
+    if (!/^(?:assertion|character|characterClass|dot|escape|escapeChar|group|ref)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
@@ -286,16 +286,16 @@
 
     switch (name) {
       case 'unicode':
-        return '\\u' + ('0000' + codePoint.toString(16)).slice(-4);
+        return '\\u' + ('0000' + codePoint.toString(16).toUpperCase()).slice(-4);
       case 'codePoint':
-        return '\\u{' + codePoint.toString(16) + '}';
+        return '\\u{' + codePoint.toString(16).toUpperCase() + '}';
       case 'controlLetter':
         return '\\c' + fromCodePoint(codePoint);
       case 'identifier':
       case 'octal':
         return '\\' + fromCodePoint(codePoint);
       case 'hex':
-        return '\\x' + ('00' + codePoint.toString(16)).slice(-2);
+        return '\\x' + ('00' + codePoint.toString(16).toUpperCase()).slice(-2);
       case 'null':
         return '\\0';
       default:
@@ -400,7 +400,7 @@
   function generateTerm(ast) {
     var type = ast.type;
 
-    if (!/^(?:assertion|character|characterClass|dot|empty|escapeChar|group|quantifier|ref)$/.test(type)) {
+    if (!/^(?:assertion|character|characterClass|dot|empty|escape|escapeChar|group|quantifier|ref)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
