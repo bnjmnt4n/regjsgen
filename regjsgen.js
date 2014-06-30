@@ -79,8 +79,8 @@
 
   /*--------------------------------------------------------------------------*/
 
-  function generate(ast) {
-    return getGenerator(ast.type)(ast);
+  function generate(node) {
+    return getGenerator(node.type)(node);
   }
 
   function getGenerator(type) {
@@ -93,8 +93,8 @@
 
   /*--------------------------------------------------------------------------*/
 
-  function generateAlternative(ast) {
-    var type = ast.type;
+  function generateAlternative(node) {
+    var type = node.type;
 
     if (!/^(?:alternative|empty)/.test(type)) {
       throw Error('Invalid node type: ' + type);
@@ -104,7 +104,7 @@
       return '';
     }
 
-    var terms = ast.terms,
+    var terms = node.terms,
         length = terms ? terms.length : 0;
 
     if (length == 0) {
@@ -123,14 +123,14 @@
     }
   }
 
-  function generateAssertion(ast) {
-    var type = ast.type;
+  function generateAssertion(node) {
+    var type = node.type;
 
     if (type != 'assertion') {
       throw Error('Invalid node type: ' + type);
     }
 
-    switch (ast.name) {
+    switch (node.name) {
       case 'start':
         return '^';
       case 'end':
@@ -144,34 +144,34 @@
     }
   }
 
-  function generateAtom(ast) {
-    var type = ast.type;
+  function generateAtom(node) {
+    var type = node.type;
 
     if (!/^(?:assertion|character|characterClass|dot|escape|escapeChar|group|ref)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
-    return getGenerator(type)(ast);
+    return getGenerator(type)(node);
   }
 
-  function generateCharacter(ast) {
-    var type = ast.type;
+  function generateCharacter(node) {
+    var type = node.type;
 
     if (type != 'character') {
       throw Error('Invalid node type: ' + type);
     }
 
-    return fromCodePoint(ast.codePoint);
+    return fromCodePoint(node.codePoint);
   }
 
-  function generateCharacterClass(ast) {
-    var type = ast.type;
+  function generateCharacterClass(node) {
+    var type = node.type;
 
     if (type != 'characterClass') {
       throw Error('Invalid node type: ' + type);
     }
 
-    var classRanges = ast.classRanges,
+    var classRanges = node.classRanges,
         length = classRanges ? classRanges.length : 0;
 
     if (length == 0) {
@@ -181,7 +181,7 @@
     var i = -1,
         result = '[';
 
-    if (ast.negative) {
+    if (node.negative) {
       result += '^';
     }
 
@@ -194,15 +194,15 @@
     return result;
   }
 
-  function generateCharacterClassRange(ast) {
-    var type = ast.type;
+  function generateCharacterClassRange(node) {
+    var type = node.type;
 
     if (type != 'characterClassRange') {
       throw Error('Invalid node type: ' + type);
     }
 
-    var min = ast.min,
-        max = ast.max;
+    var min = node.min,
+        max = node.max;
 
     if (min.type == 'characterClassRange' || max.type == 'characterClassRange') {
       throw Error('Invalid character class range');
@@ -211,28 +211,28 @@
     return generateClassAtom(min) + '-' + generateClassAtom(max);
   }
 
-  function generateClassAtom(ast) {
-    var type = ast.type;
+  function generateClassAtom(node) {
+    var type = node.type;
 
     if (!/^(?:assertion|character|characterClassRange|dot|escape|escapeChar)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
-    return getGenerator(type)(ast);
+    return getGenerator(type)(node);
   }
 
-  function generateDisjunction(ast) {
-    var type = ast.type;
+  function generateDisjunction(node) {
+    var type = node.type;
 
     if (!/^(?:disjunction|alternative)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
     if (type == 'alternative') {
-      return generateAlternative(ast);
+      return generateAlternative(node);
     }
 
-    var alternatives = ast.alternatives,
+    var alternatives = node.alternatives,
         length = alternatives ? alternatives.length : 0;
 
     if (length == 0) {
@@ -254,8 +254,8 @@
     }
   }
 
-  function generateDot(ast) {
-    var type = ast.type;
+  function generateDot(node) {
+    var type = node.type;
 
     if (type != 'dot') {
       throw Error('Invalid node type: ' + type);
@@ -264,8 +264,8 @@
     return '.';
   }
 
-  function generateEmpty(ast) {
-    var type = ast.type;
+  function generateEmpty(node) {
+    var type = node.type;
 
     if (type != 'empty') {
       throw Error('Invalid node type: ' + type);
@@ -274,15 +274,15 @@
     return '';
   }
 
-  function generateEscape(ast) {
-    var type = ast.type;
+  function generateEscape(node) {
+    var type = node.type;
 
     if (type != 'escape') {
       throw Error('Invalid node type: ' + type);
     }
 
-    var name = ast.name,
-        codePoint = ast.codePoint;
+    var name = node.name,
+        codePoint = node.codePoint;
 
     switch (name) {
       case 'unicode':
@@ -299,22 +299,22 @@
       case 'null':
         return '\\0';
       default:
-        throw Error('Unsupported node escape name: ' + ast.name);
+        throw Error('Unsupported node escape name: ' + node.name);
     }
   }
 
-  function generateEscapeChar(ast) {
-    var type = ast.type;
+  function generateEscapeChar(node) {
+    var type = node.type;
 
     if (type != 'escapeChar') {
       throw Error('Invalid node type: ' + type);
     }
 
-    return '\\' + ast.value;
+    return '\\' + node.value;
   }
 
-  function generateGroup(ast) {
-    var type = ast.type;
+  function generateGroup(node) {
+    var type = node.type;
 
     if (type != 'group') {
       throw Error('Invalid node type: ' + type);
@@ -322,7 +322,7 @@
 
     var result = '(';
 
-    switch (ast.behavior) {
+    switch (node.behavior) {
       case 'normal':
         break;
       case 'ignore':
@@ -335,24 +335,24 @@
         result += '?!';
         break;
       default:
-        throw Error('Invalid behaviour: ' + ast.behaviour);
+        throw Error('Invalid behaviour: ' + node.behaviour);
     }
 
-    result += generateDisjunction(ast.disjunction) + ')';
+    result += generateDisjunction(node.disjunction) + ')';
 
     return result;
   }
 
-  function generateQuantifier(ast) {
-    var type = ast.type;
+  function generateQuantifier(node) {
+    var type = node.type;
 
     if (type != 'quantifier') {
       throw Error('Invalid node type: ' + type);
     }
 
     var quantifier = '',
-        min = ast.min,
-        max = ast.max;
+        min = node.min,
+        max = node.max;
 
     switch (max) {
       case null:
@@ -380,31 +380,31 @@
         break;
     }
 
-    if (!ast.greedy) {
+    if (!node.greedy) {
       quantifier += '?';
     }
 
-    return generateAtom(ast.child) + quantifier;
+    return generateAtom(node.child) + quantifier;
   }
 
-  function generateRef(ast) {
-    var type = ast.type;
+  function generateRef(node) {
+    var type = node.type;
 
     if (type != 'ref') {
       throw Error('Invalid node type: ' + type);
     }
 
-    return '\\' + ast.ref;
+    return '\\' + node.ref;
   }
 
-  function generateTerm(ast) {
-    var type = ast.type;
+  function generateTerm(node) {
+    var type = node.type;
 
     if (!/^(?:assertion|character|characterClass|dot|empty|escape|escapeChar|group|quantifier|ref)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
-    return getGenerator(type)(ast);
+    return getGenerator(type)(node);
   }
 
   /*--------------------------------------------------------------------------*/
