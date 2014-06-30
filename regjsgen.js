@@ -1,7 +1,7 @@
 /*!
  * RegJSGen
  * Copyright 2014 Benjamin Tan <https://d10.github.io/>
- * Available under MIT license <http://mths.be/mit>
+ * Available under MIT license <http://d10.mit-license.org/>
  */
 ;(function() {
   'use strict';
@@ -80,11 +80,11 @@
   /*--------------------------------------------------------------------------*/
 
   function generate(node) {
-    return getGenerator(node.type)(node);
+    return getGenerator(node['type'])(node);
   }
 
   function getGenerator(type) {
-    if (generate.hasOwnProperty(type)) {
+    if (typeof generate[type] == 'function') {
       return generate[type];
     }
 
@@ -96,15 +96,11 @@
   function generateAlternative(node) {
     var type = node.type;
 
-    if (!/^(?:alternative|empty)/.test(type)) {
+    if (type != 'alternative') {
       throw Error('Invalid node type: ' + type);
     }
 
-    if (type == 'empty') {
-      return '';
-    }
-
-    var terms = node.terms,
+    var terms = node.body,
         length = terms ? terms.length : 0;
 
     if (length == 0) {
@@ -123,14 +119,14 @@
     }
   }
 
-  function generateAssertion(node) {
+  function generateAnchor(node) {
     var type = node.type;
 
-    if (type != 'assertion') {
+    if (type != 'anchor') {
       throw Error('Invalid node type: ' + type);
     }
 
-    switch (node.name) {
+    switch (node.kind) {
       case 'start':
         return '^';
       case 'end':
@@ -154,16 +150,6 @@
     return getGenerator(type)(node);
   }
 
-  function generateCharacter(node) {
-    var type = node.type;
-
-    if (type != 'character') {
-      throw Error('Invalid node type: ' + type);
-    }
-
-    return fromCodePoint(node.codePoint);
-  }
-
   function generateCharacterClass(node) {
     var type = node.type;
 
@@ -171,7 +157,7 @@
       throw Error('Invalid node type: ' + type);
     }
 
-    var classRanges = node.classRanges,
+    var classRanges = node.body,
         length = classRanges ? classRanges.length : 0;
 
     if (length == 0) {
@@ -214,7 +200,7 @@
   function generateClassAtom(node) {
     var type = node.type;
 
-    if (!/^(?:assertion|character|characterClassRange|dot|escape|escapeChar)$/.test(type)) {
+    if (!/^(?:anchor|characterClassRange|dot|value)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
@@ -224,21 +210,17 @@
   function generateDisjunction(node) {
     var type = node.type;
 
-    if (!/^(?:disjunction|alternative)$/.test(type)) {
+    if (type != 'disjunction') {
       throw Error('Invalid node type: ' + type);
     }
 
-    if (type == 'alternative') {
-      return generateAlternative(node);
-    }
-
-    var alternatives = node.alternatives,
-        length = alternatives ? alternatives.length : 0;
+    var body = node.body,
+        length = body ? body.length : 0;
 
     if (length == 0) {
-      throw Error('No alternatives');
+      throw Error('No body');
     } else if (length == 1) {
-      return generateAlternative(alternatives[0]);
+      return generate(body[0]);
     } else {
       var i = -1,
           result = '';
@@ -247,7 +229,7 @@
         if (i != 0) {
           result += '|';
         }
-        result += generateAlternative(alternatives[i]);
+        result += generate(body[i]);
       }
 
       return result;
@@ -262,55 +244,6 @@
     }
 
     return '.';
-  }
-
-  function generateEmpty(node) {
-    var type = node.type;
-
-    if (type != 'empty') {
-      throw Error('Invalid node type: ' + type);
-    }
-
-    return '';
-  }
-
-  function generateEscape(node) {
-    var type = node.type;
-
-    if (type != 'escape') {
-      throw Error('Invalid node type: ' + type);
-    }
-
-    var name = node.name,
-        codePoint = node.codePoint;
-
-    switch (name) {
-      case 'unicode':
-        return '\\u' + ('0000' + codePoint.toString(16).toUpperCase()).slice(-4);
-      case 'codePoint':
-        return '\\u{' + codePoint.toString(16).toUpperCase() + '}';
-      case 'controlLetter':
-        return '\\c' + fromCodePoint(codePoint);
-      case 'identifier':
-      case 'octal':
-        return '\\' + fromCodePoint(codePoint);
-      case 'hex':
-        return '\\x' + ('00' + codePoint.toString(16).toUpperCase()).slice(-2);
-      case 'null':
-        return '\\0';
-      default:
-        throw Error('Unsupported node escape name: ' + node.name);
-    }
-  }
-
-  function generateEscapeChar(node) {
-    var type = node.type;
-
-    if (type != 'escapeChar') {
-      throw Error('Invalid node type: ' + type);
-    }
-
-    return '\\' + node.value;
   }
 
   function generateGroup(node) {
@@ -338,7 +271,22 @@
         throw Error('Invalid behaviour: ' + node.behaviour);
     }
 
-    result += generateDisjunction(node.disjunction) + ')';
+    var body = node.body,
+        length = body ? body.length : 0;
+
+    if (length == 0) {
+      throw Error('No body');
+    } else if (length == 1) {
+      result += generate(body[0]);
+    } else {
+      var i = -1;
+
+      while (++i < length) {
+        result += generate(body[i]);
+      }
+    }
+
+    result += ')';
 
     return result;
   }
@@ -384,7 +332,7 @@
       quantifier += '?';
     }
 
-    return generateAtom(node.child) + quantifier;
+    return generateAtom(node.body[0]) + quantifier;
   }
 
   function generateRef(node) {
@@ -400,28 +348,56 @@
   function generateTerm(node) {
     var type = node.type;
 
-    if (!/^(?:assertion|character|characterClass|dot|empty|escape|escapeChar|group|quantifier|ref)$/.test(type)) {
+    if (!/^(?:anchor|characterClass(?:Escape)?|empty|group|quantifier|ref|value)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
     return getGenerator(type)(node);
   }
 
+  function generateValue(node) {
+    var type = node.type;
+
+    if (type != 'value') {
+      throw Error('Invalid node type: ' + type);
+    }
+
+    var kind = node.kind,
+        codePoint = node.codePoint;
+
+    switch (kind) {
+      case 'controlLetter':
+        return '\\c' + fromCodePoint(codePoint);
+      case 'hexadecimalEscape':
+        return '\\x' + ('00' + codePoint.toString(16).toUpperCase()).slice(-2);
+      case 'identifier':
+      case 'null':
+      case 'octal':
+      case 'singleEscape':
+        return '\\' + fromCodePoint(codePoint);
+      case 'symbol':
+        return fromCodePoint(node.codePoint);
+      case 'unicodeEscape':
+        return '\\u' + ('0000' + codePoint.toString(16).toUpperCase()).slice(-4);
+      case 'unicodeCodePointEscape':
+        return '\\u{' + codePoint.toString(16).toUpperCase() + '}';
+      default:
+        throw Error('Unsupported node kind: ' + kind);
+    }
+  }
+
   /*--------------------------------------------------------------------------*/
 
   generate.alternative = generateAlternative;
-  generate.assertion = generateAssertion;
-  generate.character = generateCharacter;
+  generate.anchor = generateAnchor;
   generate.characterClass = generateCharacterClass;
   generate.characterClassRange = generateCharacterClassRange;
   generate.disjunction = generateDisjunction;
   generate.dot = generateDot;
-  generate.empty = generateEmpty;
-  generate.escape = generateEscape;
-  generate.escapeChar = generateEscapeChar;
   generate.group = generateGroup;
   generate.quantifier = generateQuantifier;
   generate.ref = generateRef;
+  generate.value = generateValue;
 
   /*--------------------------------------------------------------------------*/
 

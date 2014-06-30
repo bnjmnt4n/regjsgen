@@ -16,7 +16,7 @@ var runTests = function(data) {
     var results = data[regex];
     var generated;
     try {
-      generated = generate(regex);
+      generated = generate(results);
     } catch (exception) {
       generated = {
         type: 'error',
@@ -27,9 +27,9 @@ var runTests = function(data) {
       var stack = exception.stack;
     }
 
-    if (stringify(generated) !== stringify(results)) {
+    if (generated !== regex) {
       console.log(
-        'Failure parsing string ' + regex +  ':' + JSON.stringify(generated) +
+        'Failure generating string ' + regex +  ':' + JSON.stringify(generated) +
         '\n' + JSON.stringify(results)
       );
       if (stack) {
