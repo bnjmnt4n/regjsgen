@@ -103,9 +103,7 @@
     var terms = node.body,
         length = terms ? terms.length : 0;
 
-    if (length == 0) {
-      throw Error('No terms');
-    } else if (length == 1) {
+    if (length == 1) {
       return generateTerm(terms[0]);
     } else {
       var i = -1,
@@ -143,7 +141,7 @@
   function generateAtom(node) {
     var type = node.type;
 
-    if (!/^(?:assertion|character|characterClass|dot|escape|escapeChar|group|ref)$/.test(type)) {
+    if (!/^(?:anchor|characterClass(?:Escape)?|dot|group|ref|value)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
@@ -160,10 +158,6 @@
     var classRanges = node.body,
         length = classRanges ? classRanges.length : 0;
 
-    if (length == 0) {
-      throw Error('No class ranges');
-    }
-
     var i = -1,
         result = '[';
 
@@ -178,6 +172,16 @@
     result += ']';
 
     return result;
+  }
+
+  function generateCharacterClassEscape(node) {
+    var type = node.type;
+
+    if (type != 'characterClassEscape') {
+      throw Error('Invalid node type: ' + type);
+    }
+
+    return '\\' + node.value;
   }
 
   function generateCharacterClassRange(node) {
@@ -274,9 +278,7 @@
     var body = node.body,
         length = body ? body.length : 0;
 
-    if (length == 0) {
-      throw Error('No body');
-    } else if (length == 1) {
+    if (length == 1) {
       result += generate(body[0]);
     } else {
       var i = -1;
@@ -367,16 +369,34 @@
 
     switch (kind) {
       case 'controlLetter':
-        return '\\c' + fromCodePoint(codePoint);
+        return '\\c' + fromCodePoint(codePoint + 64);
       case 'hexadecimalEscape':
         return '\\x' + ('00' + codePoint.toString(16).toUpperCase()).slice(-2);
       case 'identifier':
-      case 'null':
-      case 'octal':
-      case 'singleEscape':
         return '\\' + fromCodePoint(codePoint);
+      case 'null':
+        return '\\' + codePoint;
+      case 'octal':
+        return '\\' + codePoint.toString(8);
+      case 'singleEscape':
+        switch (codePoint) {
+          case 0x0008:
+            return '\\b';
+          case 0x009:
+            return '\\t';
+          case 0x00A:
+            return '\\n';
+          case 0x00B:
+            return '\\v';
+          case 0x00C:
+            return '\\f';
+          case 0x00D:
+            return '\\r';
+          default:
+            throw Error('Invalid codepoint: ' + codePoint);
+        }
       case 'symbol':
-        return fromCodePoint(node.codePoint);
+        return fromCodePoint(codePoint);
       case 'unicodeEscape':
         return '\\u' + ('0000' + codePoint.toString(16).toUpperCase()).slice(-4);
       case 'unicodeCodePointEscape':
@@ -391,6 +411,7 @@
   generate.alternative = generateAlternative;
   generate.anchor = generateAnchor;
   generate.characterClass = generateCharacterClass;
+  generate.characterClassEscape = generateCharacterClassEscape;
   generate.characterClassRange = generateCharacterClassRange;
   generate.disjunction = generateDisjunction;
   generate.dot = generateDot;
