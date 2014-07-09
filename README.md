@@ -1,17 +1,25 @@
 # RegJSGen
 
-Generating `RegExp`s from RegJSParser's AST.
+Generating `RegExp`s from RegJSParser’s AST.
 
-## Installation
+## Install
 
 ```bash
-npm install regjsgen
+npm install --save regjsgen
 ```
 
 ## Usage
 
 ```js
-var generate = require('regjsgen').generate;
+var regjsgen = require('regjsgen');
+// With `regjsparser`
+var regjsparser = require('regjsparser');
+var regex = '^a$';
+var ast = regjsparser.parse(regex);
+// Modify AST
+// ...
+// Regenerate `RegExp`
+regex = regjsgen.generate(ast);
 ```
 
 ## Testing
@@ -25,7 +33,7 @@ npm test
 To create a new reference file, execute
 
 ```bash
-node test/create_ref.js
+node test/update_fixture.js
 ```
 
 from the repo top directory.
