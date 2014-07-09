@@ -76,6 +76,26 @@
     return result;
   }
 
+  function assertType(type, expected) {
+    if (expected.indexOf('|') == -1) {
+      if (type == expected) {
+        return;
+      }
+
+      throw Error('Invalid node type: ' + type);
+    }
+
+    expected = assertType.hasOwnProperty(expected)
+      ? assertType[expected]
+      : (assertType[expected] = RegExp('^(?:' + expected + ')$'));
+
+    if (expected.test(type)) {
+      return;
+    }
+
+    throw Error('Invalid node type: ' + type);  
+  }
+
   /*--------------------------------------------------------------------------*/
 
   function generate(node) {
@@ -91,11 +111,7 @@
   /*--------------------------------------------------------------------------*/
 
   function generateAlternative(node) {
-    var type = node.type;
-
-    if (type != 'alternative') {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'alternative');
 
     var terms = node.body,
         length = terms ? terms.length : 0;
@@ -115,11 +131,7 @@
   }
 
   function generateAnchor(node) {
-    var type = node.type;
-
-    if (type != 'anchor') {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'anchor');
 
     switch (node.kind) {
       case 'start':
@@ -136,11 +148,7 @@
   }
 
   function generateAtom(node) {
-    var type = node.type;
-
-    if (!/^(?:anchor|characterClass(?:Escape)?|dot|group|ref|value)$/.test(type)) {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'anchor|characterClass|characterClassEscape|dot|group|ref|value');
 
     return generate(node);
   }
