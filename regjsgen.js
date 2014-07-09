@@ -80,12 +80,10 @@
   /*--------------------------------------------------------------------------*/
 
   function generate(node) {
-    return getGenerator(node['type'])(node);
-  }
+    var type = node.type;
 
-  function getGenerator(type) {
-    if (typeof generate[type] == 'function') {
-      return generate[type];
+    if (generate.hasOwnProperty(type) && typeof generate[type] == 'function') {
+      return generate[type](node);
     }
 
     throw Error('Invalid node type: ' + type);
@@ -145,7 +143,7 @@
       throw Error('Invalid node type: ' + type);
     }
 
-    return getGenerator(type)(node);
+    return generate(node);
   }
 
   function generateCharacterClass(node) {
@@ -208,7 +206,7 @@
       throw Error('Invalid node type: ' + type);
     }
 
-    return getGenerator(type)(node);
+    return generate(node);
   }
 
   function generateDisjunction(node) {
@@ -354,7 +352,7 @@
       throw Error('Invalid node type: ' + type);
     }
 
-    return getGenerator(type)(node);
+    return generate(node);
   }
 
   function generateValue(node) {
