@@ -1,7 +1,7 @@
 {
   "name": "regjsgen",
   "description": "Generating JavaScript RegExps in JavaScript",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Benjamin Tan <demoneaux@gmail.com> (https://d10.github.io/)",
   "license": "MIT",
   "main": "./regjsgen",
