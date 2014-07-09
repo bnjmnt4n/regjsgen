@@ -76,7 +76,6 @@
     return result;
   }
 
-
   /*--------------------------------------------------------------------------*/
 
   function generate(node) {
@@ -202,7 +201,7 @@
   function generateClassAtom(node) {
     var type = node.type;
 
-    if (!/^(?:anchor|characterClassRange|dot|value)$/.test(type)) {
+    if (!/^(?:anchor|characterClassEscape|characterClassRange|dot|value)$/.test(type)) {
       throw Error('Invalid node type: ' + type);
     }
 
