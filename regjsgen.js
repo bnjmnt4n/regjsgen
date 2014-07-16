@@ -154,11 +154,7 @@
   }
 
   function generateCharacterClass(node) {
-    var type = node.type;
-
-    if (type != 'characterClass') {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'characterClass');
 
     var classRanges = node.body,
         length = classRanges ? classRanges.length : 0;
@@ -180,21 +176,13 @@
   }
 
   function generateCharacterClassEscape(node) {
-    var type = node.type;
-
-    if (type != 'characterClassEscape') {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'characterClassEscape');
 
     return '\\' + node.value;
   }
 
   function generateCharacterClassRange(node) {
-    var type = node.type;
-
-    if (type != 'characterClassRange') {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'characterClassRange');
 
     var min = node.min,
         max = node.max;
@@ -207,21 +195,13 @@
   }
 
   function generateClassAtom(node) {
-    var type = node.type;
-
-    if (!/^(?:anchor|characterClassEscape|characterClassRange|dot|value)$/.test(type)) {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'anchor|characterClassEscape|characterClassRange|dot|value');
 
     return generate(node);
   }
 
   function generateDisjunction(node) {
-    var type = node.type;
-
-    if (type != 'disjunction') {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'disjunction');
 
     var body = node.body,
         length = body ? body.length : 0;
@@ -246,21 +226,13 @@
   }
 
   function generateDot(node) {
-    var type = node.type;
-
-    if (type != 'dot') {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'dot');
 
     return '.';
   }
 
   function generateGroup(node) {
-    var type = node.type;
-
-    if (type != 'group') {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'group');
 
     var result = '(';
 
@@ -299,11 +271,7 @@
   }
 
   function generateQuantifier(node) {
-    var type = node.type;
-
-    if (type != 'quantifier') {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'quantifier');
 
     var quantifier = '',
         min = node.min,
@@ -343,31 +311,19 @@
   }
 
   function generateRef(node) {
-    var type = node.type;
-
-    if (type != 'ref') {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'ref');
 
     return '\\' + node.ref;
   }
 
   function generateTerm(node) {
-    var type = node.type;
-
-    if (!/^(?:anchor|characterClass(?:Escape)?|empty|group|quantifier|ref|value)$/.test(type)) {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'anchor|characterClass|characterClassEscape|empty|group|quantifier|ref|value');
 
     return generate(node);
   }
 
   function generateValue(node) {
-    var type = node.type;
-
-    if (type != 'value') {
-      throw Error('Invalid node type: ' + type);
-    }
+    assertType(node.type, 'value');
 
     var kind = node.kind,
         codePoint = node.codePoint;
