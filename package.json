@@ -16,12 +16,12 @@
     "url": "git@github.com:d10/regjsgen.git"
   },
   "dependencies": {
-    "jsesc": "~0.4.3"
+    "jsesc": "~0.5.0"
   },
   "scripts": {
     "test": "node test/index.js"
   },
   "devDependencies": {
-    "got": "~0.3.0"
+    "got": "~1.2.0"
   }
 }
