@@ -93,7 +93,7 @@
       return;
     }
 
-    throw Error('Invalid node type: ' + type);  
+    throw Error('Invalid node type: ' + type);
   }
 
   /*--------------------------------------------------------------------------*/
@@ -278,6 +278,7 @@
         max = node.max;
 
     switch (max) {
+      case undefined:
       case null:
         switch (min) {
           case 0:
