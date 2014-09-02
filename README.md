@@ -33,7 +33,7 @@ npm test
 To create a new reference file, execute
 
 ```bash
-node test/update_fixture.js
+node test/update-fixture.js
 ```
 
 from the repo top directory.

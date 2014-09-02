@@ -32,7 +32,7 @@
 
   /*--------------------------------------------------------------------------*/
 
-  /*! Based on http://mths.be/fromcodepoint v0.2.0 by @mathias */
+  /*! Based on https://mths.be/fromcodepoint v0.2.0 by @mathias */
 
   var stringFromCharCode = String.fromCharCode;
   var floor = Math.floor;
@@ -148,7 +148,7 @@
   }
 
   function generateAtom(node) {
-    assertType(node.type, 'anchor|characterClass|characterClassEscape|dot|group|ref|value');
+    assertType(node.type, 'anchor|characterClass|characterClassEscape|dot|group|reference|value');
 
     return generate(node);
   }
@@ -311,14 +311,14 @@
     return generateAtom(node.body[0]) + quantifier;
   }
 
-  function generateRef(node) {
-    assertType(node.type, 'ref');
+  function generateReference(node) {
+    assertType(node.type, 'reference');
 
-    return '\\' + node.ref;
+    return '\\' + node.matchIndex;
   }
 
   function generateTerm(node) {
-    assertType(node.type, 'anchor|characterClass|characterClassEscape|empty|group|quantifier|ref|value');
+    assertType(node.type, 'anchor|characterClass|characterClassEscape|empty|group|quantifier|reference|value');
 
     return generate(node);
   }
@@ -379,7 +379,7 @@
   generate.dot = generateDot;
   generate.group = generateGroup;
   generate.quantifier = generateQuantifier;
-  generate.ref = generateRef;
+  generate.reference = generateReference;
   generate.value = generateValue;
 
   /*--------------------------------------------------------------------------*/
