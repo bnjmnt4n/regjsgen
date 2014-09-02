@@ -23,5 +23,6 @@ function saveFile(url, name, cb) {
   });
 }
 
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/master/test/test-data-unicode.json', 'test-data-unicode.json');
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/master/test/test-data.json', 'test-data.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/master/test/test-data-nonstandard.json', 'test-data-nonstandard.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/master/test/test-data-unicode.json', 'test-data-unicode.json');

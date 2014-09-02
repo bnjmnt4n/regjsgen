@@ -83,4 +83,24 @@ runTests(require('./test-data.json'), [
   '\\u{00005}',
   '\\u{01D306}'
 ]);
-//runTests(require('./test-data-unicode.json'));
+runTests(require('./test-data-nonstandard.json'), [
+  'a\\91'
+]);
+runTests(require('./test-data-unicode.json'), [
+  '\\u{000000}',
+  '\\u{0}',
+  '\\u{02}',
+  '\\u{003}',
+  '\\u{0004}',
+  '\\u{00005}',
+  '\\u{01D306}',
+  '[\\u{02}-\\u{003}]',
+  '[\\uD83D\\uDCA9-\\uD83D\\uDCAB]',
+  '[a-b\\uD83D\\uDCA9-\\uD83D\\uDCAB]',
+  '[\\uD83D\\uDCA9-\\uD83D\\uDCABa-b]',
+  '[\\uD83D\\uDCA9\\uD83D\\uDCAB]',
+  '[a-b\\uD83D\\uDCA9\\uD83D\\uDCAB]',
+  '[\\uD83D\\uDCA9\\uD83D\\uDCABa-b]',
+  '\\uD83D\\uDCA9',
+  '(?:\\uD83D\\uDCA9)'
+]);
