@@ -1,6 +1,6 @@
 {
   "name": "regjsgen",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Generate `RegExp`s from RegJSParser’s AST",
   "homepage": "https://github.com/d10/regjsgen",
   "license": "MIT",
