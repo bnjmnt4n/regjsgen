@@ -2,4 +2,12 @@ language: node_js
 node_js:
   - "0.8"
   - "0.10"
-before_install: "npm update -g npm"
+before_install: "npm install -g npm"
+deploy:
+  provider: npm
+  email: "demoneaux@gmail.com"
+  api_key:
+    secure: l2m5wxyF9jUbcU3Yd46ggPWe7WG9RCdSFXjiDdTa9R6OJceOH8d2OcVQAXh3P5Shzrp3Kpf4nZpIaFifd0Pvo/YrLtNiNsL/mGL9OUH27exTlojzujdvU0spX0hQdB25797H76HfY+u28uPXvKbq2sQfyh8TsXSw1wkORa58poM=
+  on:
+    tags: true
+    branch: master
