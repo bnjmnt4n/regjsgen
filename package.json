@@ -1,9 +1,8 @@
 {
   "name": "regjsgen",
   "version": "0.2.0",
-  "description": "Generate `RegExp`s from RegJSParser’s AST",
+  "description": "Generate regular expressions from regjsparser’s AST.",
   "homepage": "https://github.com/d10/regjsgen",
-  "license": "MIT",
   "main": "regjsgen.js",
   "keywords": [
     "ast",
@@ -12,21 +11,24 @@
     "regexp",
     "regular expressions"
   ],
-  "author": "Benjamin Tan <demoneaux@gmail.com> (https://d10.github.io/)",
-  "contributors": [
-    "Benjamin Tan <demoneaux@gmail.com> (https://d10.github.io/)",
-    "Mathias Bynens <mathias@qiwi.be> (https://mathiasbynens.be/)"
+  "license": "MIT",
+  "author": {
+    "name": "Benjamin Tan",
+    "url": "https://d10.github.io/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/d10/regjsgen.git"
+  },
+  "bugs": "https://github.com/d10/regjsgen/issues",
+  "files": [
+    "LICENSE.txt",
+    "regjsgen.js"
   ],
-  "repository": "d10/regjsgen",
   "scripts": {
     "test": "node test/test.js",
     "update-fixtures": "node test/update-fixtures.js"
   },
-  "files": [
-    "LICENSE.txt",
-    "regjsgen.js",
-    "README.md"
-  ],
   "devDependencies": {
     "jsesc": "~0.5.0",
     "request": "^2.67.0"

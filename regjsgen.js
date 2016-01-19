@@ -1,7 +1,7 @@
 /*!
- * RegJSGen
- * Copyright 2014 Benjamin Tan <https://d10.github.io/>
- * Available under MIT license <http://d10.mit-license.org/>
+ * regjsgen 0.2.0
+ * Copyright 2014-2016 Benjamin Tan <https://d10.github.io/>
+ * Available under MIT license <https://github.com/d10/regjsgen/blob/master/LICENSE>
  */
 ;(function() {
   'use strict';
