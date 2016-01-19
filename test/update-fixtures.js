@@ -1,28 +1,22 @@
 var fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    request = require('request');
 
-var got = require('got');
+function saveFile(url, name) {
+  name || (name = url.slice(url.lastIndexOf('/') + 1));
 
-function saveFile(url, name, cb) {
-  cb || (cb = function(err) {
-    if (err) {
-      throw err;
-    }
-    console.log('`%s` updated successfully.', name)
-  });
-  got(url, function(err, data) {
-    if (err) {
-      return cb(err);
-    }
-    fs.writeFile(path.join(__dirname, name), data, function(err) {
-      if (err) {
-        return cb(err);
-      }
-      cb();
+  request.get(url)
+    .on('error', function(err) {
+      console.log(err);
     })
-  });
+    .pipe(
+      fs.createWriteStream(path.join(__dirname, name))
+        .on('finish', function() {
+          console.log('`%s` updated successfully.', name);
+        })
+    );
 }
 
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/master/test/test-data.json', 'test-data.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/master/test/test-data-nonstandard.json', 'test-data-nonstandard.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/master/test/test-data-unicode.json', 'test-data-unicode.json');
+saveFile('https://github.com/jviereck/regjsparser/raw/master/test/test-data.json');
+saveFile('https://github.com/jviereck/regjsparser/raw/master/test/test-data-nonstandard.json');
+saveFile('https://github.com/jviereck/regjsparser/raw/master/test/test-data-unicode.json');
