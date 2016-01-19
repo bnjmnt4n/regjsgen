@@ -6,25 +6,22 @@
 ;(function() {
   'use strict';
 
-  /** Used to determine if values are of the language type `Object` */
+  // Used to determine if values are of the language type `Object`.
   var objectTypes = {
     'function': true,
     'object': true
   };
 
-  /** Used as a reference to the global object */
+  // Used as a reference to the global object.
   var root = (objectTypes[typeof window] && window) || this;
 
-  /** Backup possible global object */
-  var oldRoot = root;
-
-  /** Detect free variable `exports` */
+  // Detect free variable `exports`.
   var freeExports = objectTypes[typeof exports] && exports;
 
-  /** Detect free variable `module` */
+  // Detect free variable `module`.
   var freeModule = objectTypes[typeof module] && module && !module.nodeType && module;
 
-  /** Detect free variable `global` from Node.js or Browserified code and use it as `root` */
+  // Detect free variable `global` from Node.js or Browserified code and use it as `root`.
   var freeGlobal = freeExports && freeModule && typeof global == 'object' && global;
   if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal || freeGlobal.self === freeGlobal)) {
     root = freeGlobal;
@@ -32,8 +29,8 @@
 
   /*--------------------------------------------------------------------------*/
 
-  /*! Based on https://mths.be/fromcodepoint v0.2.0 by @mathias */
-
+  // Generates strings based on the given code points.
+  // Based on https://mths.be/fromcodepoint v0.2.0 by @mathias.
   var stringFromCharCode = String.fromCharCode;
   var floor = Math.floor;
   function fromCodePoint() {
@@ -82,7 +79,7 @@
         return;
       }
 
-      throw Error('Invalid node type: ' + type);
+      throw Error('Invalid node type: ' + type + '; expected type: ' + expected);
     }
 
     expected = assertType.hasOwnProperty(expected)
@@ -93,7 +90,7 @@
       return;
     }
 
-    throw Error('Invalid node type: ' + type);
+    throw Error('Invalid node type: ' + type + '; expected types: ' + expected);
   }
 
   /*--------------------------------------------------------------------------*/
@@ -114,20 +111,15 @@
     assertType(node.type, 'alternative');
 
     var terms = node.body,
-        length = terms ? terms.length : 0;
+        i = -1,
+        length = terms.length,
+        result = '';
 
-    if (length == 1) {
-      return generateTerm(terms[0]);
-    } else {
-      var i = -1,
-          result = '';
-
-      while (++i < length) {
-        result += generateTerm(terms[i]);
-      }
-
-      return result;
+    while (++i < length) {
+      result += generateTerm(terms[i]);
     }
+
+    return result;
   }
 
   function generateAnchor(node) {
@@ -157,10 +149,9 @@
     assertType(node.type, 'characterClass');
 
     var classRanges = node.body,
-        length = classRanges ? classRanges.length : 0;
-
-    var i = -1,
-        result = '[';
+        i = -1,
+        length = classRanges.length,
+        result = '';
 
     if (node.negative) {
       result += '^';
@@ -170,9 +161,7 @@
       result += generateClassAtom(classRanges[i]);
     }
 
-    result += ']';
-
-    return result;
+    return '[' + result + ']';
   }
 
   function generateCharacterClassEscape(node) {
@@ -204,25 +193,18 @@
     assertType(node.type, 'disjunction');
 
     var body = node.body,
-        length = body ? body.length : 0;
+        i = -1,
+        length = body.length,
+        result = '';
 
-    if (length == 0) {
-      throw Error('No body');
-    } else if (length == 1) {
-      return generate(body[0]);
-    } else {
-      var i = -1,
-          result = '';
-
-      while (++i < length) {
-        if (i != 0) {
-          result += '|';
-        }
-        result += generate(body[i]);
+    while (++i < length) {
+      if (i != 0) {
+        result += '|';
       }
-
-      return result;
+      result += generate(body[i]);
     }
+
+    return result;
   }
 
   function generateDot(node) {
@@ -234,7 +216,7 @@
   function generateGroup(node) {
     assertType(node.type, 'group');
 
-    var result = '(';
+    var result = '';
 
     switch (node.behavior) {
       case 'normal':
@@ -253,21 +235,14 @@
     }
 
     var body = node.body,
-        length = body ? body.length : 0;
+        i = -1,
+        length = body.length;
 
-    if (length == 1) {
-      result += generate(body[0]);
-    } else {
-      var i = -1;
-
-      while (++i < length) {
-        result += generate(body[i]);
-      }
+    while (++i < length) {
+      result += generate(body[i]);
     }
 
-    result += ')';
-
-    return result;
+    return '(' + result + ')';
   }
 
   function generateQuantifier(node) {
@@ -277,31 +252,20 @@
         min = node.min,
         max = node.max;
 
-    switch (max) {
-      case undefined:
-      case null:
-        switch (min) {
-          case 0:
-            quantifier = '*'
-            break;
-          case 1:
-            quantifier = '+';
-            break;
-          default:
-            quantifier = '{' + min + ',}';
-            break;
-        }
-        break;
-      default:
-        if (min == max) {
-          quantifier = '{' + min + '}';
-        }
-        else if (min == 0 && max == 1) {
-          quantifier = '?';
-        } else {
-          quantifier = '{' + min + ',' + max + '}';
-        }
-        break;
+    if (max == null) {
+      if (min == 0) {
+        quantifier = '*';
+      } else if (min == 1) {
+        quantifier = '+';
+      } else {
+        quantifier = '{' + min + ',}';
+      }
+    } else if (min == max) {
+      quantifier = '{' + min + '}';
+    } else if (min == 0 && max == 1) {
+      quantifier = '?';
+    } else {
+      quantifier = '{' + min + ',' + max + '}';
     }
 
     if (!node.greedy) {
@@ -384,23 +348,23 @@
 
   /*--------------------------------------------------------------------------*/
 
-  // export regjsgen
-  // some AMD build optimizers, like r.js, check for condition patterns like the following:
+  // Export regjsgen.
+  // Some AMD build optimizers, like r.js, check for condition patterns like the following:
   if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
-    // define as an anonymous module so, through path mapping, it can be aliased
+    // Define as an anonymous module so it can be aliased through path mapping.
     define(function() {
       return {
         'generate': generate
       };
     });
   }
-  // check for `exports` after `define` in case a build optimizer adds an `exports` object
+  // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
   else if (freeExports && freeModule) {
-    // in Narwhal, Node.js, Rhino -require, or RingoJS
+    // Export for CommonJS support.
     freeExports.generate = generate;
   }
-  // in a browser or Rhino
   else {
+    // Export to the global object.
     root.regjsgen = {
       'generate': generate
     };
