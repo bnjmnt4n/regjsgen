@@ -73,6 +73,9 @@
     return result;
   }
 
+  /*--------------------------------------------------------------------------*/
+
+  // Ensures that nodes have the correct types.
   function assertType(type, expected) {
     if (expected.indexOf('|') == -1) {
       if (type == expected) {
@@ -95,6 +98,7 @@
 
   /*--------------------------------------------------------------------------*/
 
+  // Generates a regular expression string based on an AST.
   function generate(node) {
     var type = node.type;
 
@@ -334,6 +338,7 @@
 
   /*--------------------------------------------------------------------------*/
 
+  // Used to generate strings for each node type.
   generate.alternative = generateAlternative;
   generate.anchor = generateAnchor;
   generate.characterClass = generateCharacterClass;
