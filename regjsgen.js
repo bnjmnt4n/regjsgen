@@ -27,6 +27,9 @@
     root = freeGlobal;
   }
 
+  // Used to check objects for own properties.
+  var hasOwnProperty = Object.prototype.hasOwnProperty;
+
   /*--------------------------------------------------------------------------*/
 
   // Generates strings based on the given code points.
@@ -76,6 +79,7 @@
   /*--------------------------------------------------------------------------*/
 
   // Ensures that nodes have the correct types.
+  var assertTypeRegexMap = {};
   function assertType(type, expected) {
     if (expected.indexOf('|') == -1) {
       if (type == expected) {
@@ -85,9 +89,9 @@
       throw Error('Invalid node type: ' + type + '; expected type: ' + expected);
     }
 
-    expected = assertType.hasOwnProperty(expected)
-      ? assertType[expected]
-      : (assertType[expected] = RegExp('^(?:' + expected + ')$'));
+    expected = hasOwnProperty.call(assertTypeRegexMap, expected)
+      ? assertTypeRegexMap[expected]
+      : (assertTypeRegexMap[expected] = RegExp('^(?:' + expected + ')$'));
 
     if (expected.test(type)) {
       return;
@@ -102,8 +106,8 @@
   function generate(node) {
     var type = node.type;
 
-    if (generate.hasOwnProperty(type) && typeof generate[type] == 'function') {
-      return generate[type](node);
+    if (hasOwnProperty.call(generators, type)) {
+      return generators[type](node);
     }
 
     throw Error('Invalid node type: ' + type);
@@ -339,17 +343,19 @@
   /*--------------------------------------------------------------------------*/
 
   // Used to generate strings for each node type.
-  generate.alternative = generateAlternative;
-  generate.anchor = generateAnchor;
-  generate.characterClass = generateCharacterClass;
-  generate.characterClassEscape = generateCharacterClassEscape;
-  generate.characterClassRange = generateCharacterClassRange;
-  generate.disjunction = generateDisjunction;
-  generate.dot = generateDot;
-  generate.group = generateGroup;
-  generate.quantifier = generateQuantifier;
-  generate.reference = generateReference;
-  generate.value = generateValue;
+  var generators = {
+    'alternative': generateAlternative,
+    'anchor': generateAnchor,
+    'characterClass': generateCharacterClass,
+    'characterClassEscape': generateCharacterClassEscape,
+    'characterClassRange': generateCharacterClassRange,
+    'disjunction': generateDisjunction,
+    'dot': generateDot,
+    'group': generateGroup,
+    'quantifier': generateQuantifier,
+    'reference': generateReference,
+    'value': generateValue
+  };
 
   /*--------------------------------------------------------------------------*/
 
