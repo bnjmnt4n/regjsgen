@@ -88,6 +88,7 @@ runTests(require('./test-data-nonstandard.json'), [
 ]);
 runTests(require('./test-data-unicode.json'), [
   '\\u{000000}',
+  '\\u{0000000000000000000}',
   '\\u{0}',
   '\\u{02}',
   '\\u{003}',
