@@ -5,16 +5,19 @@ var fs = require('fs'),
 function saveFile(url, name) {
   name || (name = url.slice(url.lastIndexOf('/') + 1));
 
-  request.get(url)
-    .on('error', function(err) {
+  request.get(url, function(err, response, body) {
+    if (err) {
       console.log(err);
-    })
-    .pipe(
-      fs.createWriteStream(path.join(__dirname, name))
-        .on('finish', function() {
+    } else {
+      fs.writeFile(path.join(__dirname, name), body, function() {
+        if (err) {
+          console.log(err);
+        } else {
           console.log('`%s` updated successfully.', name);
-        })
-    );
+        }
+      });
+    }
+  });
 }
 
 saveFile('https://github.com/jviereck/regjsparser/raw/master/test/test-data.json');

@@ -1,40 +1,36 @@
-var fs = require('fs');
-var jsesc = require('jsesc');
-
 var generate = require('../regjsgen').generate;
 
-var stringify = function(obj) {
-  return jsesc(obj, {
-    json: true,
-    compact: false,
-    indent: '  '
-  });
-};
-
-var runTests = function(data, excused) {
+function runTests(data, excused) {
   excused || (excused = []);
   var keys = Object.keys(data).filter(function(name) {
     return data[name].type != 'error' && excused.indexOf(name) == -1;
   });
   keys.forEach(function(regex) {
-    var results = data[regex];
-    var generated;
+    var node = data[regex],
+        expected = JSON.stringify(regex),
+        generated;
     try {
-      generated = JSON.stringify(generate(results));
+      generated = JSON.stringify(generate(node));
     } catch (exception) {
-      generated = {
+      generated = JSON.stringify({
         type: 'error',
         name: exception.name,
         message: exception.message,
         input: regex
-      };
+      });
       var stack = exception.stack;
     }
 
-    if (generated !== JSON.stringify(regex)) {
+    if (generated !== expected) {
       console.log(
-        'Failure generating string ' + JSON.stringify(regex) +  ':\n' + generated +
-        '\n' + JSON.stringify(results)
+        [
+          'Failure generating regular expression: %s',
+          'Generated: %s',
+          'AST: %s'
+        ].join('\n'),
+        expected,
+        generated,
+        JSON.stringify(node)
       );
       if (stack) {
         console.log(stack);
