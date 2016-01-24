@@ -1,7 +1,1 @@
-*~
-local.mk
-build/
-tags
-.DS_Store
-Makefile
-node_modules/
+node_modules
