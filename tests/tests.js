@@ -1,7 +1,9 @@
 var generate = require('../regjsgen').generate;
+var parse = require('regjsparser').parse;
 
-function runTests(data, excused) {
+function runTests(data, excused, flags) {
   excused || (excused = []);
+  flags || (flags = '');
   var keys = Object.keys(data).filter(function(name) {
     return data[name].type != 'error' && excused.indexOf(name) == -1;
   });
@@ -11,19 +13,34 @@ function runTests(data, excused) {
         generated;
     try {
       generated = JSON.stringify(generate(node));
-    } catch (exception) {
+    } catch (error) {
+      var isError = true,
+          stack = error.stack;
       generated = JSON.stringify({
-        type: 'error',
-        name: exception.name,
-        message: exception.message,
+        name: error.name,
+        message: error.message,
         input: regex
       });
-      var stack = exception.stack;
+    }
+
+    if (generated !== expected && !isError) {
+      try {
+        generated = JSON.stringify(generate(node));
+        expected = JSON.stringify(generate(parse(regex, flags)));
+      } catch (error) {
+        var stack = error.stack;
+        generated = JSON.stringify({
+          name: error.name,
+          message: error.message,
+          input: regex
+        });
+      }
     }
 
     if (generated !== expected) {
       console.log(
         [
+          'FAILED TEST',
           'Failure generating regular expression: %s',
           'Generated: %s',
           'AST: %s'
@@ -42,62 +59,6 @@ function runTests(data, excused) {
   });
 };
 
-runTests(require('./test-data.json'), [
-  '([Nn]?ever|([Nn]othing\\s{1,}))more',
-  '[\\0001]',
-  '[\\u{02}-\\u{003}]',
-  '\\ca',
-  '\\cb',
-  '\\cc',
-  '\\cd',
-  '\\ce',
-  '\\cf',
-  '\\cg',
-  '\\ch',
-  '\\ci',
-  '\\cj',
-  '\\ck',
-  '\\cl',
-  '\\cm',
-  '\\cn',
-  '\\co',
-  '\\cp',
-  '\\cq',
-  '\\cr',
-  '\\cs',
-  '\\ct',
-  '\\cu',
-  '\\cv',
-  '\\cw',
-  '\\cx',
-  '\\cy',
-  '\\cz',
-  '\\u{000000}',
-  '\\u{02}',
-  '\\u{003}',
-  '\\u{0004}',
-  '\\u{00005}',
-  '\\u{01D306}'
-]);
-runTests(require('./test-data-nonstandard.json'), [
-  'a\\91'
-]);
-runTests(require('./test-data-unicode.json'), [
-  '\\u{000000}',
-  '\\u{0000000000000000000}',
-  '\\u{0}',
-  '\\u{02}',
-  '\\u{003}',
-  '\\u{0004}',
-  '\\u{00005}',
-  '\\u{01D306}',
-  '[\\u{02}-\\u{003}]',
-  '[\\uD83D\\uDCA9-\\uD83D\\uDCAB]',
-  '[a-b\\uD83D\\uDCA9-\\uD83D\\uDCAB]',
-  '[\\uD83D\\uDCA9-\\uD83D\\uDCABa-b]',
-  '[\\uD83D\\uDCA9\\uD83D\\uDCAB]',
-  '[a-b\\uD83D\\uDCA9\\uD83D\\uDCAB]',
-  '[\\uD83D\\uDCA9\\uD83D\\uDCABa-b]',
-  '\\uD83D\\uDCA9',
-  '(?:\\uD83D\\uDCA9)'
-]);
+runTests(require('./test-data.json'));
+runTests(require('./test-data-nonstandard.json'));
+runTests(require('./test-data-unicode.json'), null, 'u');
