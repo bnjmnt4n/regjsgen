@@ -2,7 +2,7 @@
   "name": "regjsgen",
   "version": "0.2.0",
   "description": "Generate regular expressions from regjsparser’s AST.",
-  "homepage": "https://github.com/d10/regjsgen",
+  "homepage": "https://github.com/demoneaux/regjsgen",
   "main": "regjsgen.js",
   "keywords": [
     "ast",
@@ -14,13 +14,13 @@
   "license": "MIT",
   "author": {
     "name": "Benjamin Tan",
-    "url": "https://d10.github.io/"
+    "url": "https://demoneaux.github.io/"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/d10/regjsgen.git"
+    "url": "https://github.com/demoneaux/regjsgen.git"
   },
-  "bugs": "https://github.com/d10/regjsgen/issues",
+  "bugs": "https://github.com/demoneaux/regjsgen/issues",
   "files": [
     "LICENSE",
     "regjsgen.js"

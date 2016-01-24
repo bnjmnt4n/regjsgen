@@ -1,6 +1,6 @@
 # Contributing to regjsgen
 
-Contributions are always welcome. Before contributing, please [search the issue tracker](https://github.com/d10/regjsgen/issues);
+Contributions are always welcome. Before contributing, please [search the issue tracker](https://github.com/demoneaux/regjsgen/issues);
 your issue may have already been discussed or fixed in `master`. To contribute, [fork](https://help.github.com/articles/fork-a-repo/) regjsgen, commit your changes, & [send a pull request](https://help.github.com/articles/using-pull-requests/).
 
 ## Tests

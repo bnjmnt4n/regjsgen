@@ -36,7 +36,7 @@ Tested in Node.js 0.10.x, 0.12.x, 4.x and 5.x.
 
 | [![twitter/demoneaux](https://gravatar.com/avatar/029b19dba521584d83398ada3ecf6131?s=70)](https://twitter.com/demoneaux "Follow @demoneaux on Twitter") |
 |---|
-| [Benjamin Tan](https://d10.github.io/) |
+| [Benjamin Tan](https://demoneaux.github.io/) |
 
 ## Contributors
 
