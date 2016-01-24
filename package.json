@@ -22,7 +22,7 @@
   },
   "bugs": "https://github.com/d10/regjsgen/issues",
   "files": [
-    "LICENSE.txt",
+    "LICENSE",
     "regjsgen.js"
   ],
   "scripts": {
