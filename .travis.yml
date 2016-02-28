@@ -5,8 +5,13 @@ node_js:
   - "0.12"
   - "4"
   - "5"
+git:
+  depth: 10
 before_install:
-  - "npm install -g npm@^2.0.0"
+  - "nvm use $TRAVIS_NODE_VERSION"
+  - "npm set loglevel error"
+  - "npm set progress false"
+  - "npm install -g npm@\"^2.0.0\""
 script:
   - "npm test"
 after_script:

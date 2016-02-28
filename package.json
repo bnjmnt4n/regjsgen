@@ -31,9 +31,9 @@
     "update-fixtures": "node tests/update-fixtures.js"
   },
   "devDependencies": {
-    "coveralls": "^2.11.6",
-    "istanbul": "^0.4.2",
-    "regjsparser": "^0.1.5",
-    "request": "^2.67.0"
+    "coveralls": "^2.11.8",
+    "istanbul": "~0.4.2",
+    "regjsparser": "~0.1.5",
+    "request": "^2.69.0"
   }
 }
