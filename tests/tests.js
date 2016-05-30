@@ -1,7 +1,7 @@
 var generate = require('../regjsgen').generate;
 var parse = require('regjsparser').parse;
 
-function runTests(data, excused, flags) {
+function runTests(data, excused, flags, features) {
   excused || (excused = []);
   flags || (flags = '');
   var keys = Object.keys(data).filter(function(name) {
@@ -26,7 +26,7 @@ function runTests(data, excused, flags) {
     if (generated !== expected && !isError) {
       try {
         generated = JSON.stringify(generate(node));
-        expected = JSON.stringify(generate(parse(regex, flags)));
+        expected = JSON.stringify(generate(parse(regex, flags, features)));
       } catch (error) {
         var stack = error.stack;
         generated = JSON.stringify({
@@ -62,3 +62,4 @@ function runTests(data, excused, flags) {
 runTests(require('./test-data.json'));
 runTests(require('./test-data-nonstandard.json'));
 runTests(require('./test-data-unicode.json'), null, 'u');
+runTests(require('./test-data-unicode-properties.json'), null, 'u', { 'unicodePropertyEscape': true });

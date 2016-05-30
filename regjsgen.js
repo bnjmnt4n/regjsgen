@@ -178,6 +178,12 @@
     return '\\' + node.value;
   }
 
+  function generateUnicodePropertyEscape(node) {
+    assertType(node.type, 'unicodePropertyEscape');
+
+    return '\\' + (node.negative ? 'P' : 'p') + '{' + node.value + '}';
+  }
+
   function generateCharacterClassRange(node) {
     assertType(node.type, 'characterClassRange');
 
@@ -290,7 +296,7 @@
   }
 
   function generateTerm(node) {
-    assertType(node.type, 'anchor|characterClass|characterClassEscape|empty|group|quantifier|reference|value');
+    assertType(node.type, 'anchor|characterClass|characterClassEscape|empty|group|quantifier|reference|unicodePropertyEscape|value');
 
     return generate(node);
   }
@@ -349,6 +355,7 @@
     'characterClass': generateCharacterClass,
     'characterClassEscape': generateCharacterClassEscape,
     'characterClassRange': generateCharacterClassRange,
+    'unicodePropertyEscape': generateUnicodePropertyEscape,
     'disjunction': generateDisjunction,
     'dot': generateDot,
     'group': generateGroup,
