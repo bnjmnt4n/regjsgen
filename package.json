@@ -33,7 +33,7 @@
   "devDependencies": {
     "coveralls": "^2.11.8",
     "istanbul": "~0.4.2",
-    "regjsparser": "~0.1.5",
+    "regjsparser": "~0.2.0",
     "request": "^2.69.0"
   }
 }
