@@ -1,4 +1,4 @@
-# regjsgen
+# regjsgen [![Build status](https://travis-ci.org/demoneaux/regjsgen.svg?branch=master)](https://travis-ci.org/demoneaux/regjsgen) [![Code coverage status](https://coveralls.io/repos/github/demoneaux/regjsgen/badge.svg)](https://coveralls.io/github/demoneaux/regjsgen?branch=master)
 
 Generate regular expressions from [regjsparser](https://github.com/jviereck/regjsparser)’s AST.
 
