@@ -178,6 +178,12 @@
     return '\\' + node.value;
   }
 
+  function generateUnicodePropertyEscape(node) {
+    assertType(node.type, 'unicodePropertyEscape');
+
+    return '\\' + (node.negative ? 'P' : 'p') + '{' + node.value + '}';
+  }
+
   function generateCharacterClassRange(node) {
     assertType(node.type, 'characterClassRange');
 
@@ -290,7 +296,7 @@
   }
 
   function generateTerm(node) {
-    assertType(node.type, 'anchor|characterClass|characterClassEscape|empty|group|quantifier|reference|value');
+    assertType(node.type, 'anchor|characterClass|characterClassEscape|empty|group|quantifier|reference|unicodePropertyEscape|value');
 
     return generate(node);
   }
@@ -316,15 +322,15 @@
         switch (codePoint) {
           case 0x0008:
             return '\\b';
-          case 0x009:
+          case 0x0009:
             return '\\t';
-          case 0x00A:
+          case 0x000A:
             return '\\n';
-          case 0x00B:
+          case 0x000B:
             return '\\v';
-          case 0x00C:
+          case 0x000C:
             return '\\f';
-          case 0x00D:
+          case 0x000D:
             return '\\r';
           default:
             throw Error('Invalid codepoint: ' + codePoint);
@@ -349,6 +355,7 @@
     'characterClass': generateCharacterClass,
     'characterClassEscape': generateCharacterClassEscape,
     'characterClassRange': generateCharacterClassRange,
+    'unicodePropertyEscape': generateUnicodePropertyEscape,
     'disjunction': generateDisjunction,
     'dot': generateDot,
     'group': generateGroup,
