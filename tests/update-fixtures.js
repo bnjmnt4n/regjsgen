@@ -20,7 +20,7 @@ function saveFile(url, name) {
   });
 }
 
-saveFile('https://github.com/jviereck/regjsparser/raw/gh-pages/test/test-data.json');
-saveFile('https://github.com/jviereck/regjsparser/raw/gh-pages/test/test-data-nonstandard.json');
-saveFile('https://github.com/jviereck/regjsparser/raw/gh-pages/test/test-data-unicode.json');
-saveFile('https://github.com/jviereck/regjsparser/raw/gh-pages/test/test-data-unicode-properties.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-nonstandard.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-properties.json');
