@@ -1,5 +1,5 @@
 /*!
- * regjsgen 0.2.0
+ * regjsgen 0.3.0
  * Copyright 2014-2016 Benjamin Tan <https://demoneaux.github.io/>
  * Available under MIT license <https://github.com/demoneaux/regjsgen/blob/master/LICENSE>
  */

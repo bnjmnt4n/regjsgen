@@ -1,6 +1,6 @@
 {
   "name": "regjsgen",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Generate regular expressions from regjsparser’s AST.",
   "homepage": "https://github.com/demoneaux/regjsgen",
   "main": "regjsgen.js",
