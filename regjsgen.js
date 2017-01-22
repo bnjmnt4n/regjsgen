@@ -32,48 +32,31 @@
 
   /*--------------------------------------------------------------------------*/
 
-  // Generates strings based on the given code points.
-  // Based on https://mths.be/fromcodepoint v0.2.0 by @mathias.
-  var stringFromCharCode = String.fromCharCode;
-  var floor = Math.floor;
+  // Generates a string based on the given code point.
+  // Based on https://mths.be/fromcodepoint by @mathias.
   function fromCodePoint() {
-    var MAX_SIZE = 0x4000;
-    var codeUnits = [];
-    var highSurrogate;
-    var lowSurrogate;
-    var index = -1;
-    var length = arguments.length;
-    if (!length) {
-      return '';
+    var codePoint = Number(arguments[0]);
+
+    if (
+      !isFinite(codePoint) || // `NaN`, `+Infinity`, or `-Infinity`
+      codePoint < 0 || // not a valid Unicode code point
+      codePoint > 0x10FFFF || // not a valid Unicode code point
+      Math.floor(codePoint) != codePoint // not an integer
+    ) {
+      throw RangeError('Invalid code point: ' + codePoint);
     }
-    var result = '';
-    while (++index < length) {
-      var codePoint = Number(arguments[index]);
-      if (
-        !isFinite(codePoint) || // `NaN`, `+Infinity`, or `-Infinity`
-        codePoint < 0 || // not a valid Unicode code point
-        codePoint > 0x10FFFF || // not a valid Unicode code point
-        floor(codePoint) != codePoint // not an integer
-      ) {
-        throw RangeError('Invalid code point: ' + codePoint);
-      }
-      if (codePoint <= 0xFFFF) {
-        // BMP code point
-        codeUnits.push(codePoint);
-      } else {
-        // Astral code point; split in surrogate halves
-        // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-        codePoint -= 0x10000;
-        highSurrogate = (codePoint >> 10) + 0xD800;
-        lowSurrogate = (codePoint % 0x400) + 0xDC00;
-        codeUnits.push(highSurrogate, lowSurrogate);
-      }
-      if (index + 1 == length || codeUnits.length > MAX_SIZE) {
-        result += stringFromCharCode.apply(null, codeUnits);
-        codeUnits.length = 0;
-      }
+
+    if (codePoint <= 0xFFFF) {
+      // BMP code point
+      return String.fromCharCode(codePoint);
+    } else {
+      // Astral code point; split in surrogate halves
+      // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+      codePoint -= 0x10000;
+      var highSurrogate = (codePoint >> 10) + 0xD800;
+      var lowSurrogate = (codePoint % 0x400) + 0xDC00;
+      return String.fromCharCode(highSurrogate, lowSurrogate);
     }
-    return result;
   }
 
   /*--------------------------------------------------------------------------*/
@@ -307,6 +290,10 @@
     var kind = node.kind,
         codePoint = node.codePoint;
 
+    if (typeof codePoint != 'number') {
+      throw new Error('Invalid code point: ' + codePoint);
+    }
+
     switch (kind) {
       case 'controlLetter':
         return '\\c' + fromCodePoint(codePoint + 64);
@@ -333,7 +320,7 @@
           case 0x000D:
             return '\\r';
           default:
-            throw Error('Invalid codepoint: ' + codePoint);
+            throw Error('Invalid code point: ' + codePoint);
         }
       case 'symbol':
         return fromCodePoint(codePoint);
