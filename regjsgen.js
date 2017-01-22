@@ -16,13 +16,13 @@
   var root = (objectTypes[typeof window] && window) || this;
 
   // Detect free variable `exports`.
-  var freeExports = objectTypes[typeof exports] && exports;
+  var freeExports = objectTypes[typeof exports] && exports && !exports.nodeType && exports;
 
   // Detect free variable `module`.
-  var freeModule = objectTypes[typeof module] && module && !module.nodeType && module;
+  var hasFreeModule = objectTypes[typeof module] && module && !module.nodeType;
 
   // Detect free variable `global` from Node.js or Browserified code and use it as `root`.
-  var freeGlobal = freeExports && freeModule && typeof global == 'object' && global;
+  var freeGlobal = freeExports && hasFreeModule && typeof global == 'object' && global;
   if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal || freeGlobal.self === freeGlobal)) {
     root = freeGlobal;
   }
@@ -354,24 +354,26 @@
   /*--------------------------------------------------------------------------*/
 
   // Export regjsgen.
+  var regjsgen = {
+    'generate': generate
+  };
+
   // Some AMD build optimizers, like r.js, check for condition patterns like the following:
   if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
     // Define as an anonymous module so it can be aliased through path mapping.
     define(function() {
-      return {
-        'generate': generate
-      };
+      return regjsgen;
     });
+
+    root.regjsgen = regjsgen;
   }
   // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
-  else if (freeExports && freeModule) {
+  else if (freeExports && hasFreeModule) {
     // Export for CommonJS support.
     freeExports.generate = generate;
   }
   else {
     // Export to the global object.
-    root.regjsgen = {
-      'generate': generate
-    };
+    root.regjsgen = regjsgen;
   }
 }.call(this));
