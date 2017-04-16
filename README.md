@@ -1,5 +1,7 @@
 # regjsgen [![Build status](https://travis-ci.org/demoneaux/regjsgen.svg?branch=master)](https://travis-ci.org/demoneaux/regjsgen) [![Code coverage status](https://img.shields.io/codecov/c/github/demoneaux/regjsgen.svg)](https://codecov.io/gh/demoneaux/regjsgen)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/demoneaux/regjsgen.svg)](https://greenkeeper.io/)
+
 Generate regular expressions from [regjsparser](https://github.com/jviereck/regjsparser)’s AST.
 
 ## Installation
