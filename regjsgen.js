@@ -210,6 +210,12 @@
     return '.';
   }
 
+  function generateIdentifier(node) {
+    assertType(node.type, 'identifier');
+
+    return node.value;
+  }
+
   function generateGroup(node) {
     assertType(node.type, 'group');
 
@@ -217,6 +223,9 @@
 
     switch (node.behavior) {
       case 'normal':
+        if (node.name) {
+          result += '?<' + generateIdentifier(node.name) + '>';
+        }
         break;
       case 'ignore':
         result += '?:';
@@ -275,7 +284,13 @@
   function generateReference(node) {
     assertType(node.type, 'reference');
 
-    return '\\' + node.matchIndex;
+    if (node.matchIndex) {
+      return '\\' + node.matchIndex;
+    }
+    if (node.name) {
+      return '\\k<' + generateIdentifier(node.name) + '>';
+    }
+    throw new Error('Unknown reference type');
   }
 
   function generateTerm(node) {
