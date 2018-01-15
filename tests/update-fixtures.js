@@ -24,3 +24,6 @@ saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/t
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-nonstandard.json');
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode.json');
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-properties.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups-unicode.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups-unicode-properties.json');
