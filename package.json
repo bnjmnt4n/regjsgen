@@ -33,7 +33,7 @@
   "devDependencies": {
     "codecov": "^1.0.1",
     "istanbul": "~0.4.2",
-    "regjsparser": "~0.2.0",
+    "regjsparser": "~0.3.0",
     "request": "^2.69.0"
   }
 }

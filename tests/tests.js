@@ -54,7 +54,7 @@ function runTests(data, excused, flags, features) {
       }
       process.exit(1);
     } else {
-      console.log('PASSED TEST: ' + regex);
+      console.log('PASSED TEST: ' + regex + ' ' + generated);
     }
   });
 };
@@ -63,3 +63,6 @@ runTests(require('./test-data.json'));
 runTests(require('./test-data-nonstandard.json'));
 runTests(require('./test-data-unicode.json'), null, 'u');
 runTests(require('./test-data-unicode-properties.json'), null, 'u', { 'unicodePropertyEscape': true });
+runTests(require('./test-data-named-groups.json'), null, '', { namedGroups: true });
+runTests(require('./test-data-named-groups-unicode.json'), null, 'u', { namedGroups: true });
+runTests(require('./test-data-named-groups-unicode-properties.json'), null, 'u', { namedGroups: true, unicodePropertyEscape: true });
