@@ -31,7 +31,7 @@
     "update-fixtures": "node tests/update-fixtures.js"
   },
   "devDependencies": {
-    "codecov": "^1.0.1",
+    "codecov": "^2.1.0",
     "istanbul": "~0.4.2",
     "regjsparser": "~0.3.0",
     "request": "^2.69.0"
