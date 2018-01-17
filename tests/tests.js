@@ -3,23 +3,24 @@ var parse = require('regjsparser').parse;
 
 function runTests(data, excused, flags, features) {
   excused || (excused = []);
-  flags || (flags = '');
   var keys = Object.keys(data).filter(function(name) {
     return data[name].type != 'error' && excused.indexOf(name) == -1;
   });
+
   keys.forEach(function(regex) {
     var node = data[regex],
         expected = JSON.stringify(regex),
         generated;
+
     try {
       generated = JSON.stringify(generate(node));
     } catch (error) {
       var isError = true,
           stack = error.stack;
       generated = JSON.stringify({
-        name: error.name,
-        message: error.message,
-        input: regex
+        'name': error.name,
+        'message': error.message,
+        'input': regex
       });
     }
 
@@ -30,9 +31,9 @@ function runTests(data, excused, flags, features) {
       } catch (error) {
         var stack = error.stack;
         generated = JSON.stringify({
-          name: error.name,
-          message: error.message,
-          input: regex
+          'name': error.name,
+          'message': error.message,
+          'input': regex
         });
       }
     }
@@ -63,6 +64,6 @@ runTests(require('./test-data.json'));
 runTests(require('./test-data-nonstandard.json'));
 runTests(require('./test-data-unicode.json'), null, 'u');
 runTests(require('./test-data-unicode-properties.json'), null, 'u', { 'unicodePropertyEscape': true });
-runTests(require('./test-data-named-groups.json'), null, '', { namedGroups: true });
-runTests(require('./test-data-named-groups-unicode.json'), null, 'u', { namedGroups: true });
-runTests(require('./test-data-named-groups-unicode-properties.json'), null, 'u', { namedGroups: true, unicodePropertyEscape: true });
+runTests(require('./test-data-named-groups.json'), null, '', { 'namedGroups': true });
+runTests(require('./test-data-named-groups-unicode.json'), null, 'u', { 'namedGroups': true });
+runTests(require('./test-data-named-groups-unicode-properties.json'), null, 'u', { 'namedGroups': true, 'unicodePropertyEscape': true });

@@ -5,19 +5,16 @@ var fs = require('fs'),
 function saveFile(url, name) {
   name || (name = url.slice(url.lastIndexOf('/') + 1));
 
-  request.get(url, function(err, response, body) {
-    if (err) {
+  request.get(url)
+    .on('error', function(err) {
       console.log(err);
-    } else {
-      fs.writeFile(path.join(__dirname, name), body, function() {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log('`%s` updated successfully.', name);
-        }
-      });
-    }
-  });
+    })
+    .pipe(
+      fs.createWriteStream(path.join(__dirname, name))
+    )
+    .on('finish', function() {
+      console.log('`%s` updated successfully.', name);
+    });
 }
 
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data.json');
