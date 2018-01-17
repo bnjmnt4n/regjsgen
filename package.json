@@ -1,8 +1,8 @@
 {
   "name": "regjsgen",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Generate regular expressions from regjsparser’s AST.",
-  "homepage": "https://github.com/demoneaux/regjsgen",
+  "homepage": "https://github.com/bnjmnt4n/regjsgen",
   "main": "regjsgen.js",
   "keywords": [
     "ast",
@@ -14,13 +14,13 @@
   "license": "MIT",
   "author": {
     "name": "Benjamin Tan",
-    "url": "https://demoneaux.github.io/"
+    "url": "https://bnjmnt4n.now.sh/"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/demoneaux/regjsgen.git"
+    "url": "https://github.com/bnjmnt4n/regjsgen.git"
   },
-  "bugs": "https://github.com/demoneaux/regjsgen/issues",
+  "bugs": "https://github.com/bnjmnt4n/regjsgen/issues",
   "files": [
     "LICENSE",
     "regjsgen.js"
@@ -31,9 +31,9 @@
     "update-fixtures": "node tests/update-fixtures.js"
   },
   "devDependencies": {
-    "codecov": "^1.0.1",
-    "istanbul": "~0.4.2",
+    "codecov": "^3.0.0",
+    "istanbul": "~0.4.5",
     "regjsparser": "~0.3.0",
-    "request": "^2.69.0"
+    "request": "^2.83.0"
   }
 }
