@@ -1,11 +1,11 @@
 # Contributing to regjsgen
 
-Contributions are always welcome. Before contributing, please [search the issue tracker](https://github.com/demoneaux/regjsgen/issues);
+Contributions are always welcome. Before contributing, please [search the issue tracker](https://github.com/bnjmnt4n/regjsgen/issues);
 your issue may have already been discussed or fixed in `master`. To contribute, [fork](https://help.github.com/articles/fork-a-repo/) regjsgen, commit your changes, & [send a pull request](https://help.github.com/articles/using-pull-requests/).
 
 ## Tests
 
-Include updated unit tests in the `test` directory as part of your pull request.
+Include updated unit tests in the `tests` directory as part of your pull request.
 
 Before running the unit tests you’ll need to install, `npm i`, [development dependencies](https://docs.npmjs.com/files/package.json#devdependencies).
 Run unit tests from the command-line via `npm test`.
