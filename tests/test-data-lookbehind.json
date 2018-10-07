@@ -1,0 +1,84 @@
+{
+  "x(?<=y)": {
+    "type": "alternative",
+    "body": [
+      {
+        "type": "value",
+        "kind": "symbol",
+        "codePoint": 120,
+        "range": [
+          0,
+          1
+        ],
+        "raw": "x"
+      },
+      {
+        "type": "group",
+        "behavior": "lookbehind",
+        "body": [
+          {
+            "type": "value",
+            "kind": "symbol",
+            "codePoint": 121,
+            "range": [
+              5,
+              6
+            ],
+            "raw": "y"
+          }
+        ],
+        "range": [
+          1,
+          7
+        ],
+        "raw": "(?<=y)"
+      }
+    ],
+    "range": [
+      0,
+      7
+    ],
+    "raw": "x(?<=y)"
+  },
+  "x(?<!y)": {
+    "type": "alternative",
+    "body": [
+      {
+        "type": "value",
+        "kind": "symbol",
+        "codePoint": 120,
+        "range": [
+          0,
+          1
+        ],
+        "raw": "x"
+      },
+      {
+        "type": "group",
+        "behavior": "negativeLookbehind",
+        "body": [
+          {
+            "type": "value",
+            "kind": "symbol",
+            "codePoint": 121,
+            "range": [
+              5,
+              6
+            ],
+            "raw": "y"
+          }
+        ],
+        "range": [
+          1,
+          7
+        ],
+        "raw": "(?<=y)"
+      }
+    ],
+    "range": [
+      0,
+      7
+    ],
+    "raw": "x(?<=y)"
+  }
+}
