@@ -18,9 +18,10 @@ function saveFile(url, name) {
 }
 
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-lookbehind.json');
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-nonstandard.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-properties.json');
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups.json');
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups-unicode.json');
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups-unicode-properties.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-properties.json');

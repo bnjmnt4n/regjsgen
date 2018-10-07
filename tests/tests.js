@@ -24,18 +24,16 @@ function runTests(data, excused, flags, features) {
       });
     }
 
-    if (generated !== expected && !isError) {
-      try {
-        generated = JSON.stringify(generate(node));
-        expected = JSON.stringify(generate(parse(regex, flags, features)));
-      } catch (error) {
-        var stack = error.stack;
-        generated = JSON.stringify({
-          'name': error.name,
-          'message': error.message,
-          'input': regex
-        });
-      }
+    try {
+      generated = JSON.stringify(generate(node));
+      expected = JSON.stringify(generate(parse(regex, flags, features)));
+    } catch (error) {
+      var stack = error.stack;
+      generated = JSON.stringify({
+        'name': error.name,
+        'message': error.message,
+        'input': regex
+      });
     }
 
     if (generated !== expected) {
@@ -67,3 +65,4 @@ runTests(require('./test-data-unicode-properties.json'), null, 'u', { 'unicodePr
 runTests(require('./test-data-named-groups.json'), null, '', { 'namedGroups': true });
 runTests(require('./test-data-named-groups-unicode.json'), null, 'u', { 'namedGroups': true });
 runTests(require('./test-data-named-groups-unicode-properties.json'), null, 'u', { 'namedGroups': true, 'unicodePropertyEscape': true });
+runTests(require('./test-data-lookbehind.json'), null, '', { 'lookbehind': true });

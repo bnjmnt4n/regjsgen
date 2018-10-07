@@ -230,6 +230,12 @@
       case 'negativeLookahead':
         result += '?!';
         break;
+      case 'lookbehind':
+        result += '?<=';
+        break;
+      case 'negativeLookbehind':
+        result += '?<!';
+        break;
       default:
         throw Error('Invalid behaviour: ' + node.behaviour);
     }
