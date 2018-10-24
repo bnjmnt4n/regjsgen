@@ -1,5 +1,5 @@
 /*!
- * regjsgen 0.4.0
+ * regjsgen 0.5.0
  * Copyright 2014-2018 Benjamin Tan <https://bnjmnt4n.now.sh/>
  * Available under MIT license <https://github.com/bnjmnt4n/regjsgen/blob/master/LICENSE>
  */
