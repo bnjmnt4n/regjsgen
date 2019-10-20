@@ -27,13 +27,13 @@
   ],
   "scripts": {
     "test": "node tests/tests.js",
-    "coverage": "istanbul cover --report html tests/tests.js",
+    "coverage": "nyc --reporter=html npm test",
     "update-fixtures": "node tests/update-fixtures.js"
   },
   "devDependencies": {
-    "codecov": "^3.1.0",
-    "istanbul": "~0.4.5",
-    "regjsparser": "~0.4.0",
+    "codecov": "^3.6.1",
+    "nyc": "^14.1.1",
+    "regjsparser": "~0.6.0",
     "request": "^2.88.0"
   }
 }
