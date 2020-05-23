@@ -4,7 +4,7 @@ Generate regular expressions from [regjsparser][regjsparser]’s AST.
 
 ## Installation
 
-```bash
+```sh
 npm i regjsgen
 ```
 
@@ -15,22 +15,22 @@ npm i regjsgen
 This function accepts an abstract syntax tree representing a regular expression (see [regjsparser][regjsparser]), and returns the generated regular expression string.
 
 ```js
-var regjsparser = require('regjsparser');
-var regjsgen = require('regjsgen');
+const regjsparser = require('regjsparser');
+const regjsgen = require('regjsgen');
 
 // Generate an AST with `regjsparser`.
-var ast = regjsparser.parse(regex);
+let ast = regjsparser.parse(regex);
 
 // Modify AST
 // …
 
 // Generate `RegExp` string with `regjsgen`.
-regex = regjsgen.generate(ast);
+let regex = regjsgen.generate(ast);
 ```
 
 ## Support
 
-Tested in Node.js 0.10, 0.12, 4, 6, 8, 10 and 12.
+Tested in Node.js 0.10, 0.12, 4, 6, 8, 10, 12 and 14.
 
 
 [travis-ci]: https://travis-ci.org/bnjmnt4n/regjsgen
