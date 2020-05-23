@@ -14,7 +14,7 @@
   "license": "MIT",
   "author": {
     "name": "Benjamin Tan",
-    "url": "https://bnjmnt4n.now.sh/"
+    "url": "https://ofcr.se/"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
   },
   "bugs": "https://github.com/bnjmnt4n/regjsgen/issues",
   "files": [
-    "LICENSE",
+    "LICENSE-MIT.txt",
     "regjsgen.js"
   ],
   "scripts": {
