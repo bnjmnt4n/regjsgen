@@ -96,21 +96,25 @@
     throw Error('Invalid node type: ' + type);
   }
 
+  // Constructs a string by concatentating the output of each term.
+  function generateSequence(generator, terms) {
+    var i = -1,
+        length = terms.length,
+        result = '';
+
+    while (++i < length) {
+      result += generator(terms[i]);
+    }
+
+    return result;
+  }
+
   /*--------------------------------------------------------------------------*/
 
   function generateAlternative(node) {
     assertType(node.type, 'alternative');
 
-    var terms = node.body,
-        i = -1,
-        length = terms.length,
-        result = '';
-
-    while (++i < length) {
-      result += generateTerm(terms[i]);
-    }
-
-    return result;
+    return generateSequence(generateTerm, node.body);
   }
 
   function generateAnchor(node) {
@@ -139,20 +143,10 @@
   function generateCharacterClass(node) {
     assertType(node.type, 'characterClass');
 
-    var classRanges = node.body,
-        i = -1,
-        length = classRanges.length,
-        result = '';
-
-    if (node.negative) {
-      result += '^';
-    }
-
-    while (++i < length) {
-      result += generateClassAtom(classRanges[i]);
-    }
-
-    return '[' + result + ']';
+    return '[' +
+      (node.negative ? '^' : '') +
+      generateSequence(generateClassAtom, node.body) +
+    ']';
   }
 
   function generateCharacterClassEscape(node) {
@@ -234,13 +228,7 @@
         throw Error('Invalid behaviour: ' + node.behaviour);
     }
 
-    var body = node.body,
-        i = -1,
-        length = body.length;
-
-    while (++i < length) {
-      result += generate(body[i]);
-    }
+    result += generateSequence(generate, node.body);
 
     return '(' + result + ')';
   }
