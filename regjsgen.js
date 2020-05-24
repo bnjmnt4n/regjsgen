@@ -341,6 +341,8 @@
             return '\\f';
           case 0x000D:
             return '\\r';
+          case 0x002D:
+            return '\\-';
           default:
             throw Error('Invalid code point: ' + codePoint);
         }
