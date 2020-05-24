@@ -44,7 +44,7 @@ function runTests(data, options) {
     try {
       passed = astNodesAreEquivalent(
         parse(regex, flags, features),
-        parse(generate(node), flags, features),
+        parse(generate(node), flags, features)
       );
     } catch (error) {
       stack = error.stack;
