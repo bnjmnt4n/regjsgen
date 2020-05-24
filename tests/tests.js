@@ -1,8 +1,13 @@
 var generate = require('../regjsgen').generate;
 var parse = require('regjsparser').parse;
+var astNodesAreEquivalent = require('./equiv');
 
-function runTests(data, excused, flags, features) {
-  excused || (excused = []);
+function runTests(data, options) {
+  options || (options = {});
+  var excused = options.excused || [],
+      flags = options.flags || '',
+      features = options.features || {};
+
   var keys = Object.keys(data).filter(function(name) {
     return data[name].type != 'error' && excused.indexOf(name) == -1;
   });
@@ -10,13 +15,16 @@ function runTests(data, excused, flags, features) {
   keys.forEach(function(regex) {
     var node = data[regex],
         expected = JSON.stringify(regex),
-        generated;
+        generated,
+        passed,
+        stack;
 
+    // Ensure that the generated regex matches the original input.
     try {
       generated = JSON.stringify(generate(node));
+      passed = generated == expected;
     } catch (error) {
-      var isError = true,
-          stack = error.stack;
+      stack = error.stack;
       generated = JSON.stringify({
         'name': error.name,
         'message': error.message,
@@ -24,11 +32,22 @@ function runTests(data, excused, flags, features) {
       });
     }
 
+    if (passed) {
+      console.log('PASSED TEST: %s', expected);
+      return;
+    }
+
+    // If the generated regex does not match the original input, the output
+    // could be identical to the original input in terms of the AST.
+    // eg. `a{1,}` generates the same AST nodes as `a+`.
+    // Compare the ASTs of the generated regex and the input regex.
     try {
-      generated = JSON.stringify(generate(node));
-      expected = JSON.stringify(generate(parse(regex, flags, features)));
+      passed = astNodesAreEquivalent(
+        parse(regex, flags, features),
+        parse(generate(node), flags, features),
+      );
     } catch (error) {
-      var stack = error.stack;
+      stack = error.stack;
       generated = JSON.stringify({
         'name': error.name,
         'message': error.message,
@@ -36,33 +55,45 @@ function runTests(data, excused, flags, features) {
       });
     }
 
-    if (generated !== expected) {
-      console.log(
+    if (!passed) {
+      console.error(
         [
-          'FAILED TEST',
-          'Failure generating regular expression: %s',
+          'FAILED TEST: %s',
           'Generated: %s',
-          'AST: %s'
+          'Input AST: %s'
         ].join('\n'),
-        expected,
+        JSON.stringify(regex),
         generated,
         JSON.stringify(node)
       );
       if (stack) {
-        console.log(stack);
+        console.error(stack);
       }
       process.exit(1);
     } else {
-      console.log('PASSED TEST: ' + regex + ' ' + generated);
+      console.log('PASSED TEST: %s', expected);
     }
   });
 };
 
 runTests(require('./test-data.json'));
 runTests(require('./test-data-nonstandard.json'));
-runTests(require('./test-data-unicode.json'), null, 'u');
-runTests(require('./test-data-unicode-properties.json'), null, 'u', { 'unicodePropertyEscape': true });
-runTests(require('./test-data-named-groups.json'), null, '', { 'namedGroups': true });
-runTests(require('./test-data-named-groups-unicode.json'), null, 'u', { 'namedGroups': true });
-runTests(require('./test-data-named-groups-unicode-properties.json'), null, 'u', { 'namedGroups': true, 'unicodePropertyEscape': true });
-runTests(require('./test-data-lookbehind.json'), null, '', { 'lookbehind': true });
+runTests(require('./test-data-unicode.json'), { 'flags': 'u' });
+runTests(require('./test-data-unicode-properties.json'), {
+  'flags': 'u',
+  'features': { 'unicodePropertyEscape': true }
+});
+runTests(require('./test-data-named-groups.json'), {
+  'features': { 'namedGroups': true }
+});
+runTests(require('./test-data-named-groups-unicode.json'), {
+  'flags': 'u',
+  'features': { 'namedGroups': true }
+});
+runTests(require('./test-data-named-groups-unicode-properties.json'), {
+  'flags': 'u',
+  'features': { 'namedGroups': true, 'unicodePropertyEscape': true }
+});
+runTests(require('./test-data-lookbehind.json'), {
+  'features': { 'lookbehind': true }
+});
