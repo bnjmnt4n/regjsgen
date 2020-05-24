@@ -904,5 +904,86 @@
     "name": "SyntaxError",
     "message": "atomEscape at position 1\n    \\a\n     ^",
     "input": "\\a"
+  },
+  "\\-": {
+    "type": "error",
+    "name": "SyntaxError",
+    "message": "atomEscape at position 1\n    \\-\n     ^",
+    "input": "\\-"
+  },
+  "}": {
+    "type": "error",
+    "name": "SyntaxError",
+    "message": "Expected atom at position 0\n    }\n    ^",
+    "input": "}"
+  },
+  "]": {
+    "type": "error",
+    "name": "SyntaxError",
+    "message": "Expected atom at position 0\n    ]\n    ^",
+    "input": "]"
+  },
+  "[\\-]": {
+    "type": "characterClass",
+    "body": [
+      {
+        "type": "value",
+        "kind": "singleEscape",
+        "codePoint": 45,
+        "range": [
+          1,
+          3
+        ],
+        "raw": "\\-"
+      }
+    ],
+    "negative": false,
+    "range": [
+      0,
+      4
+    ],
+    "raw": "[\\-]"
+  },
+  "[}]": {
+    "type": "characterClass",
+    "body": [
+      {
+        "type": "value",
+        "kind": "symbol",
+        "codePoint": 125,
+        "range": [
+          1,
+          2
+        ],
+        "raw": "}"
+      }
+    ],
+    "negative": false,
+    "range": [
+      0,
+      3
+    ],
+    "raw": "[}]"
+  },
+  "[^}]": {
+    "type": "characterClass",
+    "body": [
+      {
+        "type": "value",
+        "kind": "symbol",
+        "codePoint": 125,
+        "range": [
+          2,
+          3
+        ],
+        "raw": "}"
+      }
+    ],
+    "negative": true,
+    "range": [
+      0,
+      4
+    ],
+    "raw": "[^}]"
   }
 }
