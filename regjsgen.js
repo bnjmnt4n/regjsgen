@@ -100,10 +100,28 @@
   function generateSequence(generator, terms) {
     var i = -1,
         length = terms.length,
-        result = '';
+        result = '',
+        term;
 
     while (++i < length) {
-      result += generator(terms[i]);
+      term = terms[i];
+
+      // Ensure that `\0` null escapes followed by number symbols are not
+      // treated as backreferences.
+      if (
+        i + 1 < length &&
+        terms[i].type == 'value' &&
+        terms[i].kind == 'null' &&
+        terms[i + 1].type == 'value' &&
+        terms[i + 1].kind == 'symbol' &&
+        terms[i + 1].codePoint >= 48 &&
+        terms[i + 1].codePoint <= 57
+      ) {
+        result += '\\000';
+        continue;
+      }
+
+      result += generator(term);
     }
 
     return result;
