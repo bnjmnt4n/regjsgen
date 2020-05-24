@@ -332,7 +332,7 @@
       case 'null':
         return '\\' + codePoint;
       case 'octal':
-        return '\\' + codePoint.toString(8);
+        return '\\' + ('000' + codePoint.toString(8)).slice(-3);
       case 'singleEscape':
         switch (codePoint) {
           case 0x0008:
