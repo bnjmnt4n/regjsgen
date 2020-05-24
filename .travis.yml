@@ -19,4 +19,4 @@ before_install:
 script:
   - "npm test"
 after_script:
-  - "npm run coverage && codecov"
+  - "npm run report-coverage"
