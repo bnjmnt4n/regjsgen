@@ -97,3 +97,7 @@ runTests(require('./test-data-named-groups-unicode-properties.json'), {
 runTests(require('./test-data-lookbehind.json'), {
   'features': { 'lookbehind': true }
 });
+runTests(require('./test-data-unicode-set.json'), {
+  'flags': 'uv',
+  'features': { 'unicodePropertyEscape': true, 'unicodeSet': true }
+});
