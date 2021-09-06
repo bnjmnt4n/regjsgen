@@ -98,6 +98,6 @@ runTests(require('./test-data-lookbehind.json'), {
   'features': { 'lookbehind': true }
 });
 runTests(require('./test-data-unicode-set.json'), {
-  'flags': 'uv',
+  'flags': 'v',
   'features': { 'unicodePropertyEscape': true, 'unicodeSet': true }
 });
