@@ -34,7 +34,7 @@
   "devDependencies": {
     "codecov": "^3.8.1",
     "nyc": "^15.1.0",
-    "regjsparser": "nicolo-ribaudo/regjsparser#proposal-unicode-set",
+    "regjsparser": "^0.7.0",
     "request": "^2.88.2"
   }
 }
