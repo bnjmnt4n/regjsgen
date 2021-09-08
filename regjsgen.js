@@ -97,18 +97,16 @@
   }
 
   // Constructs a string by concatentating the output of each term.
-  function generateSequence(generator, terms, separator) {
+  function generateSequence(generator, terms, /* optional */  separator) {
     var i = -1,
         length = terms.length,
         result = '',
         term;
 
-    if (separator == null) separator = '';
-
     while (++i < length) {
       term = terms[i];
 
-      if (i > 0) result += separator;
+      if (separator && i > 0) result += separator;
 
       // Ensure that `\0` null escapes followed by number symbols are not
       // treated as backreferences.
