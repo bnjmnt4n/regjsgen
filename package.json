@@ -32,7 +32,7 @@
     "update-fixtures": "node tests/update-fixtures.js"
   },
   "devDependencies": {
-    "codecov": "^3.8.1",
+    "codecov": "^3.8.3",
     "nyc": "^15.1.0",
     "regjsparser": "^0.7.0",
     "request": "^2.88.2"
