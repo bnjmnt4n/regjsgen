@@ -200,7 +200,7 @@
   function generateClassStrings(node) {
     assertType(node.type, 'classStrings');
 
-    return '(' + generateSequence(generateClassString, node.strings, '|') + ')';
+    return '\\q{' + generateSequence(generateClassString, node.strings, '|') + '}';
   }
 
   function generateClassString(node) {
