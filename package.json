@@ -34,7 +34,7 @@
   "devDependencies": {
     "codecov": "^3.8.3",
     "nyc": "^15.1.0",
-    "regjsparser": "^0.7.0",
+    "regjsparser": "^0.8.2",
     "request": "^2.88.2"
   }
 }
