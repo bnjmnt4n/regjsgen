@@ -26,3 +26,4 @@ saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/t
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode.json');
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-properties.json');
 saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-set.json');
+saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-modifiers-group.json');

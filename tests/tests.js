@@ -101,3 +101,7 @@ runTests(require('./test-data-unicode-set.json'), {
   'flags': 'v',
   'features': { 'unicodePropertyEscape': true, 'unicodeSet': true }
 });
+runTests(require('./test-data-modifiers-group.json'), {
+  'flags': '',
+  'features': { 'modifiers': true }
+});
