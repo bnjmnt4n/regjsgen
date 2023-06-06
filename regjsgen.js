@@ -1,7 +1,7 @@
 /*!
- * regjsgen 0.5.2
- * Copyright 2014-2020 Benjamin Tan <https://ofcr.se/>
- * Available under the MIT license <https://github.com/bnjmnt4n/regjsgen/blob/master/LICENSE-MIT.txt>
+ * regjsgen 0.8.0
+ * Copyright 2014-2023 Benjamin Tan <https://ofcr.se/>
+ * Available under the MIT license <https://github.com/bnjmnt4n/regjsgen/blob/main/LICENSE-MIT.txt>
  */
 ;(function() {
   'use strict';
