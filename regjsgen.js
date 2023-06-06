@@ -236,7 +236,14 @@
         }
         break;
       case 'ignore':
-        result += '?:';
+        if (node.modifierFlags) {
+          result += '?';
+          if (node.modifierFlags.enabling) result += node.modifierFlags.enabling;
+          if (node.modifierFlags.disabling) result += "-" + node.modifierFlags.disabling;
+          result += ':';
+        } else {
+          result += '?:';
+        }
         break;
       case 'lookahead':
         result += '?=';
