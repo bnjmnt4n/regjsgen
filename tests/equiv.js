@@ -54,8 +54,10 @@ function astNodesAreEquivalent(a, b) {
       var bNames = Object.keys(b).filter(function(name) { return name != "range" && name != "raw"; });
       var aNameCount = aNames.length;
 
-      if(a.type == "quantifier" && b.type == "quantifier" && a.symbol == null && b.symbol == "+"){
-        b.symbol = undefined;
+      // Avoid comparing actual symbols for quantifiers.
+      if (a.type == "quantifier" && b.type == "quantifier") {
+        delete a.symbol;
+        delete b.symbol;
       }
 
       if (aNameCount == bNames.length) {
