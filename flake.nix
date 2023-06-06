@@ -1,6 +1,7 @@
 {
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:NixOS/nixpkgs?rev=5e871d8aa6f57cc8e0dc087d1c5013f6e212b4ce";
+    flake-utils.url = "github:numtide/flake-utils?rev=cfacdce06f30d2b68473a46042957675eebb3401";
   };
 
   outputs = { self, nixpkgs, flake-utils }:
@@ -10,9 +11,7 @@
       in {
        devShell = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
-            nodejs-16_x
-            yarn
-            nodePackages.eslint_d
+            nodejs-18_x
             nodePackages.typescript-language-server
           ];
         };
