@@ -1,29 +1,36 @@
-var fs = require('fs'),
-    path = require('path'),
-    request = require('request');
+const { createWriteStream } = require('node:fs');
+const { join } = require('node:path');
+const { pipeline } = require('node:stream/promises');
 
-function saveFile(url, name) {
-  name || (name = url.slice(url.lastIndexOf('/') + 1));
+async function saveFile(url) {
+  const name = url.slice(url.lastIndexOf('/') + 1);
 
-  request.get(url)
-    .on('error', function(err) {
-      console.log(err);
-    })
-    .pipe(
-      fs.createWriteStream(path.join(__dirname, name))
-    )
-    .on('finish', function() {
-      console.log('`%s` updated successfully.', name);
-    });
+  try {
+    const { body } = await fetch(url);
+
+    await pipeline(
+      body,
+      createWriteStream(join(__dirname, name)),
+    );
+    console.log('`%s` updated successfully.', name);
+  } catch(err) {
+    console.error('Error writing to file:', err);
+  }
 }
 
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-lookbehind.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-nonstandard.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups-unicode.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups-unicode-properties.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-properties.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-set.json');
-saveFile('https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-modifiers-group.json');
+const FIXTURE_URLS = [
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-lookbehind.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-nonstandard.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups-unicode.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups-unicode-properties.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-properties.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-set.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-modifiers-group.json',
+];
+
+(async () => {
+  await Promise.all(FIXTURE_URLS.map(saveFile));
+})();
