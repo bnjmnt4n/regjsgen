@@ -27,13 +27,11 @@
   ],
   "scripts": {
     "test": "node tests/tests.js",
-    "coverage": "nyc --reporter=html npm test",
-    "report-coverage": "nyc --reporter=lcov npm test && codecov",
+    "coverage": "nyc --reporter=lcov --reporter=text-summary npm run test",
     "update-fixtures": "node tests/update-fixtures.js"
   },
   "devDependencies": {
-    "codecov": "^3.8.3",
-    "nyc": "^15.1.0",
+    "nyc": "^17.1.0",
     "regjsparser": "^0.12.0"
   }
 }

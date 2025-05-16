@@ -35,7 +35,7 @@ Compatible with regjsparser v0.12.0’s AST.
 
 
 [ci]: https://github.com/bnjmnt4n/regjsgen/actions
-[ci-img]: https://github.com/bnjmnt4n/regjsgen/workflows/Node.js%20CI/badge.svg
+[ci-img]: https://github.com/bnjmnt4n/regjsgen/workflows/Tests/badge.svg
 [codecov]: https://codecov.io/gh/bnjmnt4n/regjsgen
 [codecov-img]: https://codecov.io/gh/bnjmnt4n/regjsgen/branch/main/graph/badge.svg
 [regjsparser]: https://github.com/jviereck/regjsparser

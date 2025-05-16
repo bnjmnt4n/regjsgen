@@ -2,10 +2,9 @@ name: Tests
 on:
   push:
   pull_request:
-permissions:
-  contents: read
 jobs:
   tests:
+    name: Run tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -14,6 +13,9 @@ jobs:
           - 18.x
           - 20.x
           - 22.x
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,7 +26,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm clean-install
       - run: npm run test
-      - name: Codecov
-        if: ${{ success() }}
-        run: npm run report-coverage
-        continue-on-error: true
+      - run: npm run coverage
+      - uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          directory: coverage
