@@ -1,19 +1,19 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?rev=5e871d8aa6f57cc8e0dc087d1c5013f6e212b4ce";
-    flake-utils.url = "github:numtide/flake-utils?rev=cfacdce06f30d2b68473a46042957675eebb3401";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = nixpkgs.legacyPackages."${system}";
-      in {
-       devShell = pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [
-            nodejs-18_x
-            nodePackages.typescript-language-server
-          ];
-        };
-      });
+  outputs = {nixpkgs, ...}: let
+    systems = ["aarch64-darwin" "x86_64-darwin" "aarch64-linux" "x86_64-linux"];
+    forEachSystem = systems: f: builtins.foldl' (acc: system: nixpkgs.lib.recursiveUpdate acc (f system)) {} systems;
+  in
+    forEachSystem systems (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
+      devShells.${system}.default = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          nodejs
+        ];
+      };
+    });
 }
