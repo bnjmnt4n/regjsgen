@@ -1,24 +1,29 @@
-name: Node.js CI
-
-on: [push, pull_request]
-
+name: Tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
 jobs:
   tests:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
-
+        node-version:
+          - 16.x
+          - 18.x
+          - 20.x
+          - 22.x
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm test
-    - name: Codecov
-      if: ${{ success() }}
-      run: npm run report-coverage
-      continue-on-error: true
+      - uses: actions/checkout@v4
+        persist-credentials: false
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm clean-install
+      - run: npm run test
+      - name: Codecov
+        if: ${{ success() }}
+        run: npm run report-coverage
+        continue-on-error: true
