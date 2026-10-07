@@ -258,7 +258,7 @@
         result += '?<!';
         break;
       default:
-        throw Error('Invalid behaviour: ' + node.behaviour);
+        throw Error('Invalid behaviour: ' + node.behavior);
     }
 
     result += generateSequence(generate, node.body);
