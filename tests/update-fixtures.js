@@ -29,6 +29,9 @@ const FIXTURE_URLS = [
   'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-properties.json',
   'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-unicode-set.json',
   'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-modifiers-group.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-lookbehind-modifiers-group.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-named-groups-unicode-set.json',
+  'https://raw.githubusercontent.com/jviereck/regjsparser/gh-pages/test/test-data-buffer-boundaries.json',
 ];
 
 (async () => {
