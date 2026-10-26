@@ -182,3 +182,8 @@ testGenerates(
   { 'type': 'alternative', 'body': [symbol('1'), value('null', 0)] },
   '1\\0'
 );
+
+// Buffer boundary anchors.
+testGenerates('start-of-buffer anchor', { 'type': 'anchor', 'kind': 'start-buffer' }, '\\A');
+testGenerates('end-of-buffer anchor', { 'type': 'anchor', 'kind': 'end-buffer' }, '\\z');
+testGenerates('end-of-buffer anchor with an optional newline', { 'type': 'anchor', 'kind': 'end-buffer-optional-newline' }, '\\Z');

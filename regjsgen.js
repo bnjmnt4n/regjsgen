@@ -149,6 +149,12 @@
         return '\\b';
       case 'not-boundary':
         return '\\B';
+      case 'start-buffer':
+        return '\\A';
+      case 'end-buffer':
+        return '\\z';
+      case 'end-buffer-optional-newline':
+        return '\\Z';
       default:
         throw Error('Invalid assertion');
     }
