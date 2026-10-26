@@ -5,6 +5,9 @@ var astNodesAreEquivalent = require('./equiv');
 function runTests(data, options) {
   options || (options = {});
   var excused = options.excused || [],
+      // When `flags` is `null`, each key is a regex literal such as `/\A/u`
+      // and carries its own flags.
+      literal = options.flags === null,
       flags = options.flags || '',
       features = options.features || {};
 
@@ -12,12 +15,21 @@ function runTests(data, options) {
     return data[name].type != 'error' && excused.indexOf(name) == -1;
   });
 
-  keys.forEach(function(regex) {
-    var node = data[regex],
-        expected = JSON.stringify(regex),
+  keys.forEach(function(key) {
+    var node = data[key],
+        regex = key,
+        regexFlags = flags,
+        expected,
         generated,
         passed,
         stack;
+
+    if (literal) {
+      var match = /^\/([\s\S]*)\/([a-z]*)$/.exec(key);
+      regex = match[1];
+      regexFlags = match[2];
+    }
+    expected = JSON.stringify(regex);
 
     // Ensure that the generated regex matches the original input.
     try {
@@ -43,8 +55,8 @@ function runTests(data, options) {
     // Compare the ASTs of the generated regex and the input regex.
     try {
       passed = astNodesAreEquivalent(
-        parse(regex, flags, features),
-        parse(generate(node), flags, features)
+        parse(regex, regexFlags, features),
+        parse(generate(node), regexFlags, features)
       );
     } catch (error) {
       stack = error.stack;
@@ -101,7 +113,19 @@ runTests(require('./test-data-unicode-set.json'), {
   'flags': 'v',
   'features': { 'unicodePropertyEscape': true, 'unicodeSet': true }
 });
+runTests(require('./test-data-named-groups-unicode-set.json'), {
+  'flags': 'v',
+  'features': { 'namedGroups': true, 'unicodeSet': true }
+});
 runTests(require('./test-data-modifiers-group.json'), {
   'flags': '',
-  'features': { 'modifiers': true }
+  'features': { 'modifiers': true, 'namedGroups': true }
+});
+runTests(require('./test-data-lookbehind-modifiers-group.json'), {
+  'flags': '',
+  'features': { 'lookbehind': true, 'modifiers': true }
+});
+runTests(require('./test-data-buffer-boundaries.json'), {
+  'flags': null,
+  'features': { 'unicodeSet': true, 'bufferBoundaries': true, 'modifiers': true }
 });
